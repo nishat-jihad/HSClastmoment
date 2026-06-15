@@ -32,7 +32,6 @@ a{text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;}
   flex-shrink:0;background:var(--white);border-bottom:var(--border);
   padding:0 14px;display:none;align-items:center;
   justify-content:space-between;height:var(--nav);gap:8px;
-  /* safe area for iPhone notch */
   padding-left:max(14px,env(safe-area-inset-left));
   padding-right:max(14px,env(safe-area-inset-right));
 }
@@ -50,7 +49,6 @@ a{text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;}
 #scroll-area{
   flex:1;overflow-y:auto;overflow-x:hidden;
   -webkit-overflow-scrolling:touch;
-  /* bottom safe area padding for iPhone home bar */
   padding-bottom:env(safe-area-inset-bottom);
 }
 
@@ -159,8 +157,11 @@ a{text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;}
 #pg-play{padding-bottom:60px;}
 .ply-lay{display:grid;grid-template-columns:1fr 290px;}
 .ply-main{border-right:var(--border);min-width:0;}
+
+/* FIX: iframe container — actual iframe injected on play, removed on back */
 .ply-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-bottom:var(--border);}
 .ply-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
+
 .ply-info{padding:clamp(14px,3vw,22px);}
 .ply-badge{display:inline-block;background:var(--black);color:var(--white);font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;margin-bottom:9px;}
 .ply-ttl{font-family:var(--fd);font-size:clamp(1rem,2.5vw,1.5rem);line-height:1.2;margin-bottom:18px;}
@@ -195,7 +196,7 @@ a{text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;}
 .modal-body{padding:18px;}
 .fg{margin-bottom:14px;}
 .fl{display:block;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:5px;}
-.fi,.ft{width:100%;border:var(--border);padding:10px 12px;font-family:var(--fb);font-size:16px;/* 16px prevents iOS zoom */background:var(--white);outline:none;-webkit-appearance:none;border-radius:0;}
+.fi,.ft{width:100%;border:var(--border);padding:10px 12px;font-family:var(--fb);font-size:16px;background:var(--white);outline:none;-webkit-appearance:none;border-radius:0;}
 .fi:focus,.ft:focus{box-shadow:var(--shadow);}
 .ft{resize:vertical;min-height:72px;}
 .trow{display:flex;align-items:center;gap:10px;}
@@ -213,14 +214,14 @@ a{text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;}
 .toast{position:fixed;bottom:max(20px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(70px);background:var(--black);color:var(--white);padding:9px 20px;border:var(--border);font-size:.76rem;font-weight:700;letter-spacing:.04em;z-index:9999;transition:transform .28s;pointer-events:none;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 
-/* ══ TABLET (641–900px) ══ */
+/* ══ TABLET ══ */
 @media(min-width:641px){
   .modal-ov{align-items:center;padding:16px;}
   .modal{max-width:520px;border-bottom:var(--border);max-height:88vh;}
   .ply-lay{grid-template-columns:1fr 260px;}
 }
 
-/* ══ DESKTOP (901px+) ══ */
+/* ══ DESKTOP ══ */
 @media(min-width:901px){
   .ply-lay{grid-template-columns:1fr 310px;}
   #navbar{padding:0 24px;}
@@ -228,13 +229,12 @@ a{text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;}
   .crumb{max-width:160px;}
 }
 
-/* ══ MOBILE (≤640px) — stack player, single-col cards ══ */
+/* ══ MOBILE ══ */
 @media(max-width:640px){
   .ply-lay{grid-template-columns:1fr;}
   .ply-main{border-right:none;border-bottom:var(--border);}
   .ply-side{border-left:none;border-top:var(--border);max-height:260px;}
   .nb-bc{display:none;}
-  /* on mobile player sidebar scrolls compactly */
   .side-list{max-height:260px;}
 }
 
@@ -256,7 +256,7 @@ a{text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;}
     </div>
   </nav>
 
-  <!-- SCROLL AREA — all pages live here -->
+  <!-- SCROLL AREA -->
   <div id="scroll-area">
 
     <!-- LANDING -->
@@ -270,12 +270,12 @@ a{text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;}
         <div class="date-lbl">DAYS LEFT</div>
       </div>
       <div class="click-hint z1">
-  <span class="hint-text">এখানে ক্লিক করো!</span>
-  <svg class="hint-arrow" viewBox="0 0 80 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M4 8 C 20 4, 50 30, 72 32" stroke="#0a0a0a" stroke-width="2.5" stroke-dasharray="6 4" fill="none"/>
-    <path d="M65 26 L72 32 L64 36" stroke="#0a0a0a" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
-</div>
+        <span class="hint-text">এখানে ক্লিক করো!</span>
+        <svg class="hint-arrow" viewBox="0 0 80 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 8 C 20 4, 50 30, 72 32" stroke="#0a0a0a" stroke-width="2.5" stroke-dasharray="6 4" fill="none"/>
+          <path d="M65 26 L72 32 L64 36" stroke="#0a0a0a" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
       <p class="subhead z1">"We Will Try our Best"</p>
       <button class="btn-primary z1" onclick="goToSubjects()">Let's STUDY <span>→</span></button>
       <div class="counters z1">
@@ -311,8 +311,8 @@ a{text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;}
       <div class="ply-lay" id="ply-lay"></div>
     </div>
 
-  </div><!-- /scroll-area -->
-</div><!-- /shell -->
+  </div>
+</div>
 
 <!-- MODAL -->
 <div class="modal-ov" id="modal-ov">
@@ -351,49 +351,39 @@ const IMGS = {
   biology:   "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Old_book_bindings.jpg/600px-Old_book_bindings.jpg"
 };
 
+// ══════════════════════════════════════════════════════
+// DEFAULT DATA — এখানে videos add করো, সবাই দেখতে পাবে
+// Admin দিয়ে add করলে শুধু তোমার browser-এ save হয়
+// ══════════════════════════════════════════════════════
 const DEFAULT_SUBJECTS = [
   {id:"bangla",name:"Bangla",nameBn:"বাংলা",videos:[
-    {id:"v1",title:"বাংলা ১ম পত্র — গদ্য সাহিত্য বিশ্লেষণ",ytId:"MkpAiNhAKEE",duration:"45:22",pdfUrl:"https://drive.google.com/file/d/example_bangla_1",desc:"এই ক্লাসে আমরা HSC বাংলা ১ম পত্রের গদ্য অংশ বিশ্লেষণ করব।",public:true},
-    {id:"v2",title:"বাংলা ২য় পত্র — ব্যাকরণ সম্পূর্ণ গাইড",ytId:"3vwpHqxbxMc",duration:"52:10",pdfUrl:"https://drive.google.com/file/d/example_bangla_2",desc:"বাংলা ব্যাকরণের সকল টপিক এক ক্লাসে।",public:true},
-    {id:"v3",title:"কবিতা বিশ্লেষণ — সৃজনশীল প্রশ্নোত্তর",ytId:"ZCE8VqVNYAU",duration:"38:45",pdfUrl:"https://drive.google.com/file/d/example_bangla_3",desc:"সৃজনশীল প্রশ্নের জন্য কবিতা বিশ্লেষণ।",public:true},
-    {id:"v4",title:"রচনা লেখার কৌশল",ytId:"NlKxpHFaWwk",duration:"29:30",pdfUrl:"https://drive.google.com/file/d/example_bangla_4",desc:"রচনায় ভালো নম্বর পেতে এই কৌশলগুলো অনুসরণ করো।",public:true}
+    {id:"v1",title:"বাংলা ১ম পত্র Full Subject By Omar Faruk Sir",ytId:"L_TDshu8WLs",duration:"07:00:01",pdfUrl:"https://drive.google.com/file/d/15mpRCxaQYRg3fWrFCOH-G6GgMzabYNCn/view?usp=drivesdk",desc:"Bangla 1st paper full subject class|| HSC 2026 last time preparation",public:true},
+    {id:"v2",title:"বাংলা ২য় পত্র Full Subject By Omar Faruk Sir",ytId:"sSWsrnn0qa0",duration:"02:29:56",pdfUrl:"https://drive.google.com/file/d/1BrvqvJnuUceiO_tqoIcZ5wwa78nmxfRd/view?usp=drivesdk",desc:"Bangla 2nd paper Full Subject class|| HSC 2026 last time preparation",public:true}
   ]},
   {id:"english",name:"English",nameBn:"ইংরেজি",videos:[
-    {id:"v1",title:"English 1st Paper — Reading Comprehension",ytId:"pnmUaEFV_wk",duration:"41:18",pdfUrl:"https://drive.google.com/file/d/example_eng_1",desc:"Master reading comprehension for HSC English 1st Paper.",public:true},
-    {id:"v2",title:"English 2nd Paper — Grammar Complete Guide",ytId:"INbVMQtQpDo",duration:"55:00",pdfUrl:"https://drive.google.com/file/d/example_eng_2",desc:"Complete grammar guide covering all HSC topics.",public:true},
-    {id:"v3",title:"Writing Skills — Paragraph, Email & Composition",ytId:"JJLDcIBxODc",duration:"47:33",pdfUrl:"https://drive.google.com/file/d/example_eng_3",desc:"How to write perfect paragraphs, emails and compositions.",public:true},
-    {id:"v4",title:"Seen & Unseen Comprehension",ytId:"3GwjfUFyY6M",duration:"36:14",pdfUrl:"https://drive.google.com/file/d/example_eng_4",desc:"Practice session for seen and unseen comprehension.",public:true},
-    {id:"v5",title:"English Dialogue & Completing Story",ytId:"Rh-BgWMN9p8",duration:"31:55",pdfUrl:"https://drive.google.com/file/d/example_eng_5",desc:"Tips and tricks for dialogue and story completion.",public:true}
+    {id:"v1",title:"English 1st Paper — By Sumon Sir",ytId:"jegosLHD8vs",duration:"10:42:22",pdfUrl:"https://drive.google.com/file/d/17qn0q4cgU1_ak_DPc2bI_bFYgwcy2fV6/view?usp=drivesdk",desc:"English 1st paper full subject class|| HSC 2026 Last time preparation",public:true},
+    {id:"v2",title:"English 2nd Paper — By Sumon Sir",ytId:"RI1y7DxcT70",duration:"11:58:09",pdfUrl:"https://drive.google.com/file/d/1jpAZ-MxFTnKxmb1A3H5Wxmfm1gpAVlQV/view?usp=drivesdk",desc:"English 2nd paper Full Subject class|| HSC 2026 last time preparation",public:true}
   ]},
   {id:"ict",name:"ICT",nameBn:"তথ্য ও যোগাযোগ প্রযুক্তি",videos:[
-    {id:"v1",title:"ICT অধ্যায় ১ — বিশ্ব ও বাংলাদেশ প্রেক্ষিত",ytId:"Y-kkFLQq9b4",duration:"50:12",pdfUrl:"https://drive.google.com/file/d/example_ict_1",desc:"ICT-র প্রথম অধ্যায়ের সকল গুরুত্বপূর্ণ টপিক।",public:true},
-    {id:"v2",title:"ডেটা কমিউনিকেশন ও নেটওয়ার্কিং",ytId:"3QhU9jd03a0",duration:"44:30",pdfUrl:"https://drive.google.com/file/d/example_ict_2",desc:"নেটওয়ার্কিং ও ডেটা কমিউনিকেশনের বিস্তারিত।",public:true},
-    {id:"v3",title:"প্রোগ্রামিং ভাষা — C প্রোগ্রামিং বেসিক",ytId:"I0SzgIMzSBQ",duration:"62:00",pdfUrl:"https://drive.google.com/file/d/example_ict_3",desc:"C প্রোগ্রামিং এর সকল বেসিক কনসেপ্ট।",public:true},
-    {id:"v4",title:"ডেটাবেজ ম্যানেজমেন্ট — SQL",ytId:"7S_tz1z_5bA",duration:"48:22",pdfUrl:"https://drive.google.com/file/d/example_ict_4",desc:"SQL এবং ডেটাবেজের সম্পূর্ণ গাইড।",public:true},
-    {id:"v5",title:"ওয়েব ডিজাইন — HTML ও CSS",ytId:"UB1O30fR-EE",duration:"39:45",pdfUrl:"https://drive.google.com/file/d/example_ict_5",desc:"ওয়েব ডিজাইনের মূল বিষয়গুলো সহজ ভাষায়।",public:true},
-    {id:"v6",title:"ICT সৃজনশীল প্রশ্নোত্তর",ytId:"qNgx-ELNJnc",duration:"55:18",pdfUrl:"https://drive.google.com/file/d/example_ict_6",desc:"সৃজনশীল প্রশ্নের জন্য সম্পূর্ণ প্রস্তুতি।",public:true}
+    {id:"v1",title:"অধ্যায় ১ — বিশ্ব ও বাংলাদেশ প্রেক্ষিত By Kazi Rakibul",ytId:"FycgM1KkpN0",duration:"01:42:46",pdfUrl:"https://cutt.ly/0rYsWUmb",desc:"ICT-র প্রথম অধ্যায়ের সকল টপিক|| HSC last time preparation",public:true},
+    {id:"v2",title:"ডেটা কমিউনিকেশন ও নেটওয়ার্কিং Full Chapter By Kazi Rakibul",ytId:"pHO9fmTlHyQ",duration:"03:03:02",pdfUrl:"https://cutt.ly/0rYsWUmb",desc:"নেটওয়ার্কিং ও ডেটা কমিউনিকেশনের বিস্তারিত|| HSC last time preparation",public:true},
+    {id:"v3",title:"Number System and Digital Device Full Chapter By Kazi Rakibul",ytId:"UraWGwzZIU0",duration:"05:55:10",pdfUrl:"https://cutt.ly/0rYsWUmb",desc:"Full chapter || HSC last time preparation",public:true},
+    {id:"v4",title:"ওয়েব ডিজাইন and HTML — By Kazi Rakibul",ytId:"zljcRsSi8QU",duration:"03:30:25",pdfUrl:"https://cutt.ly/0rYsWUmb",desc:"ICT chapter 04|| HSC last time preparation",public:true},
+    {id:"v5",title:"Programming Language (C) — By Kazi Rakibul",ytId:"PUGOQ5zJeVk",duration:"04:48:40",pdfUrl:"https://cutt.ly/0rYsWUmb",desc:"ICT chapter 05||HSC last time preparation",public:true},
+    {id:"v6",title:"DBMS — By Kazi Rakibul",ytId:"warR3iHt_Wc",duration:"03:45:40",pdfUrl:"https://cutt.ly/0rYsWUmb",desc:"ICT chapter 06||HSC last Time preparation",public:true}
   ]},
   {id:"physics",name:"Physics",nameBn:"পদার্থবিজ্ঞান",videos:[
-    {id:"v1",title:"পদার্থ অধ্যায় ১ — ভৌত জগৎ ও পরিমাপ",ytId:"ZihykvEOiZo",duration:"44:00",pdfUrl:"https://drive.google.com/file/d/example_phy_1",desc:"পদার্থবিজ্ঞানের প্রথম অধ্যায় বিস্তারিতভাবে।",public:true},
-    {id:"v2",title:"গতিবিদ্যা — নিউটনের সূত্র ও প্রয়োগ",ytId:"9x-Tz0MBrG4",duration:"58:30",pdfUrl:"https://drive.google.com/file/d/example_phy_2",desc:"নিউটনের গতিসূত্র সহজ উদাহরণ দিয়ে বোঝানো।",public:true},
-    {id:"v3",title:"তড়িৎ চুম্বকত্ব — সম্পূর্ণ অধ্যায়",ytId:"W2aD40p9_fA",duration:"67:15",pdfUrl:"https://drive.google.com/file/d/example_phy_3",desc:"তড়িৎ চুম্বকত্বের সকল সূত্র ও সমস্যা সমাধান।",public:true},
-    {id:"v4",title:"আলোকবিজ্ঞান — প্রতিফলন ও প্রতিসরণ",ytId:"y8Yv4pnuzS8",duration:"52:40",pdfUrl:"https://drive.google.com/file/d/example_phy_4",desc:"আলোর ধর্ম, প্রতিফলন ও প্রতিসরণ।",public:true},
-    {id:"v5",title:"আধুনিক পদার্থবিজ্ঞান — কোয়ান্টাম ও নিউক্লিয়ার",ytId:"FjHJ7FmV0M4",duration:"49:20",pdfUrl:"https://drive.google.com/file/d/example_phy_5",desc:"কোয়ান্টাম মেকানিক্স ও নিউক্লিয়ার ফিজিক্স।",public:true}
+    {id:"v1",title:"Physics 1st Paper — Part 01",ytId:"mmreeiYqxFk",duration:"06:51:30",pdfUrl:"https://drive.google.com/file/d/1O58ZxWij7L2J4ldoJHpYUUGJwMITLQdI/view?usp=drivesdk",desc:"Vector, Dynamics, Newtonian Mechanics, Work-Energy and Power",public:true},
+    {id:"v2",title:"Physics 1st Paper — Part 02",ytId:"Jll8uMMiYf0",duration:"06:25:21",pdfUrl:"https://drive.google.com/drive/folders/14UpNHh4rWbHv-vlVMivi9r562XX9vJvx",desc:"Gravitation, Physical Properties of Matter, Periodic Motion, Wave, Ideal Gas",public:true}
   ]},
   {id:"chemistry",name:"Chemistry",nameBn:"রসায়ন",videos:[
-    {id:"v1",title:"রসায়ন অধ্যায় ১ — পরমাণুর গঠন",ytId:"pU9MgAkdZRQ",duration:"46:10",pdfUrl:"https://drive.google.com/file/d/example_chem_1",desc:"পরমাণুর গঠন ও ইলেকট্রন বিন্যাস।",public:true},
-    {id:"v2",title:"রাসায়নিক বন্ধন — সম্পূর্ণ গাইড",ytId:"QqjcCvzWwww",duration:"53:00",pdfUrl:"https://drive.google.com/file/d/example_chem_2",desc:"আয়নিক, সমযোজী ও ধাতব বন্ধন।",public:true},
-    {id:"v3",title:"জৈব রসায়ন — হাইড্রোকার্বন ও কার্যকরী মূলক",ytId:"9Ql9Q5Fqzf4",duration:"61:25",pdfUrl:"https://drive.google.com/file/d/example_chem_3",desc:"অ্যালকেন, অ্যালকিন, অ্যালকাইন।",public:true},
-    {id:"v4",title:"রাসায়নিক বিক্রিয়া ও সাম্যবস্থা",ytId:"ANi709NF7K0",duration:"44:55",pdfUrl:"https://drive.google.com/file/d/example_chem_4",desc:"রাসায়নিক সাম্যবস্থা ও Le Chatelier নীতি।",public:true},
-    {id:"v5",title:"অ্যাসিড, ক্ষার ও লবণ — pH গণনা",ytId:"qgQCOJBlMjM",duration:"40:30",pdfUrl:"https://drive.google.com/file/d/example_chem_5",desc:"অ্যাসিড-ক্ষার তত্ত্ব ও pH।",public:true}
+    {id:"v1",title:"Chemistry 1st — All Chapter For CQ (Part-01)",ytId:"HtHvw_c14h8",duration:"02:55:52",pdfUrl:"#",desc:"",public:true},
+    {id:"v2",title:"Chemistry 1st — All Chapter For CQ (Part-02)",ytId:"RRtMbIpFIvI",duration:"02:33:38",pdfUrl:"https://drive.google.com/file/d/10ebiSHyXIxhbeGPdumgFlkcPN7UTgImQ/view?usp=sharing",desc:"",public:true},
+    {id:"v3",title:"এক ক্লাসেই জৈব যৌগের All CQ + MCQ (Saikat Vhai)",ytId:"lWwffA-4HT8",duration:"06:41:54",pdfUrl:"https://drive.google.com/file/d/1qDmMY-SICT81bXdr2cKMbKwyM9Q5vmF8/view",desc:"",public:true}
   ]},
   {id:"math",name:"Higher Math",nameBn:"উচ্চতর গণিত",videos:[
-    {id:"v1",title:"বিন্দু, রেখা ও বৃত্ত",ytId:"n01EQdtTe-M",duration:"57:00",pdfUrl:"https://drive.google.com/file/d/example_math_1",desc:"স্থানাঙ্ক জ্যামিতির মৌলিক অধ্যায়।",public:true},
-    {id:"v2",title:"ক্যালকুলাস — অন্তরীকরণ",ytId:"WUvTyaaNkzM",duration:"65:40",pdfUrl:"https://drive.google.com/file/d/example_math_2",desc:"ডেরিভেটিভ ও অ্যান্টিডেরিভেটিভ।",public:true},
-    {id:"v3",title:"সমাকলন — ইন্টিগ্রাল",ytId:"rfG8ce4nNh0",duration:"59:22",pdfUrl:"https://drive.google.com/file/d/example_math_3",desc:"Integration-এর সকল কৌশল।",public:true},
-    {id:"v4",title:"ভেক্টর ও ত্রিমাত্রিক জ্যামিতি",ytId:"ml4NSzCQobk",duration:"48:15",pdfUrl:"https://drive.google.com/file/d/example_math_4",desc:"ভেক্টরের যোগ, বিয়োগ ও গুণ।",public:true},
-    {id:"v5",title:"সম্ভাবনা তত্ত্ব ও পরিসংখ্যান",ytId:"KzfWUEJjG18",duration:"42:08",pdfUrl:"https://drive.google.com/file/d/example_math_5",desc:"মধ্যমা, গড় ও সম্ভাবনার হিসাব।",public:true},
-    {id:"v6",title:"ম্যাট্রিক্স ও নির্ণায়ক",ytId:"Ip3X9LOh2dk",duration:"51:33",pdfUrl:"https://drive.google.com/file/d/example_math_6",desc:"ম্যাট্রিক্সের যোগ, গুণ ও ডিটার্মিন্যান্ট।",public:true}
+    {id:"v1",title:"Higher Math 2nd Paper (4 Chapter) — Part 01",ytId:"haLVawdb-FI",duration:"05:34:40",pdfUrl:"#",desc:"Chapters: 01. Real Number | 02. Linear Programming | 03. Complex Number | 04. Polynomial",public:true},
+    {id:"v2",title:"Higher Math 2nd Paper 4 Chapter — Part 02",ytId:"EusLYRwa3vA",duration:"09:00:12",pdfUrl:"https://drive.google.com/file/d/1sMroUiDyY5yWKXvnmceIjxhQex7nukrH/view",desc:"HSC last moment",public:true}
   ]},
   {id:"biology",name:"Biology",nameBn:"জীববিজ্ঞান",videos:[
     {id:"v1",title:"কোষ ও কোষের গঠন",ytId:"URUJD5NEXC8",duration:"48:30",pdfUrl:"https://drive.google.com/file/d/example_bio_1",desc:"কোষের অঙ্গাণু ও তাদের কার্যাবলী।",public:true},
@@ -404,9 +394,15 @@ const DEFAULT_SUBJECTS = [
   ]}
 ];
 
-/* PERSISTENCE */
-const LS_KEY = 'hsc2026_v3';
-function loadData(){try{const s=localStorage.getItem(LS_KEY);if(s){const p=JSON.parse(s);if(Array.isArray(p)&&p.length===DEFAULT_SUBJECTS.length)return p;}}catch(e){}return JSON.parse(JSON.stringify(DEFAULT_SUBJECTS));}
+/* PERSISTENCE — localStorage শুধু admin changes এর জন্য, default data সবার জন্য */
+const LS_KEY = 'hsc2026_v4';
+function loadData(){
+  try{
+    const s=localStorage.getItem(LS_KEY);
+    if(s){const p=JSON.parse(s);if(Array.isArray(p)&&p.length===DEFAULT_SUBJECTS.length)return p;}
+  }catch(e){}
+  return JSON.parse(JSON.stringify(DEFAULT_SUBJECTS));
+}
 function saveData(){try{localStorage.setItem(LS_KEY,JSON.stringify(SUBJECTS));}catch(e){}}
 
 /* STATE */
@@ -419,7 +415,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   renderSubjects();
 });
 
-function updateTotalCount(){document.getElementById('total-v').textContent=SUBJECTS.reduce((s,sub)=>s+sub.videos.length,0);}
+function updateTotalCount(){
+  document.getElementById('total-v').textContent=SUBJECTS.reduce((s,sub)=>s+sub.videos.length,0);
+}
 
 /* COUNTDOWN */
 function startCountdown(){
@@ -499,15 +497,28 @@ function renderVideos(subjectId){
   }).join('');
 }
 
+/* ══════════════════════════════════════════════════════
+   FIX 1: AUDIO STOPS ON BACK
+   iframe সরাসরি HTML-এ না রেখে JS দিয়ে inject করা হচ্ছে।
+   Back করলে stopPlayer() call হয়, যা iframe remove করে।
+   এতে YouTube audio পুরোপুরি বন্ধ হয়।
+══════════════════════════════════════════════════════ */
+function stopPlayer(){
+  // iframe কে DOM থেকে সরিয়ে দাও — এটাই audio বন্ধ করার একমাত্র নিশ্চিত উপায়
+  const wrap = document.querySelector('.ply-wrap');
+  if(wrap){
+    const fr = wrap.querySelector('iframe');
+    if(fr) fr.remove();
+  }
+}
+
 /* RENDER PLAYER */
 function renderPlayer(subjectId,vi){
   const sub=SUBJECTS.find(s=>s.id===subjectId),v=sub.videos[vi];
   document.getElementById('ply-lay').innerHTML=`
     <div class="ply-main">
-      <div class="ply-wrap">
-        <iframe src="https://www.youtube.com/embed/${v.ytId}?autoplay=1&rel=0&modestbranding=1"
-          title="${v.title}" frameborder="0"
-          allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
+      <div class="ply-wrap" id="ply-wrap">
+        <!-- iframe এখানে JS দিয়ে inject হবে — audio fix এর জন্য -->
       </div>
       <div class="ply-info">
         <div class="ply-badge">${sub.name} — CLASS ${String(vi+1).padStart(2,'0')}</div>
@@ -515,6 +526,7 @@ function renderPlayer(subjectId,vi){
         <div class="ply-acts">
           <a class="btn-pdf" href="${v.pdfUrl}" target="_blank" rel="noopener">📄 PDF ডাউনলোড</a>
           <button class="btn-back" onclick="goToVideos('${subjectId}')">← Back to ${sub.name}</button>
+          <button class="btn-back" onclick="goToSubjects()" style="background:var(--grey);">⌂ Subjects</button>
           ${adminMode?`<button class="ab" style="border:var(--border);padding:9px 16px;font-size:.78rem;" onclick="openEdit('${subjectId}','${v.id}')">✏ Edit</button>`:''}
         </div>
         <p class="ply-desc">${v.desc}</p>
@@ -533,6 +545,16 @@ function renderPlayer(subjectId,vi){
           </div>`).join('')}
       </div>
     </aside>`;
+
+  // iframe এখন inject করা হচ্ছে — separate step এ
+  const wrap = document.getElementById('ply-wrap');
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://www.youtube.com/embed/${v.ytId}?autoplay=1&rel=0&modestbranding=1`;
+  iframe.title = v.title;
+  iframe.setAttribute('frameborder','0');
+  iframe.setAttribute('allow','accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture');
+  iframe.setAttribute('allowfullscreen','');
+  wrap.appendChild(iframe);
 }
 
 /* MODAL */
@@ -580,36 +602,49 @@ function togglePub(subjectId,videoId){
 
 /* TOAST */
 let _tt;
-function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2200);}
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2200);
+}
 
-/* ══ NAVIGATION — SCROLL BUG FINALLY FIXED ══
-   All pages live inside #scroll-area.
-   Switching page = display:none/block + scrollTop=0 on #scroll-area.
-   #shell is position:fixed so the viewport never moves.
-   Button click → instant top-of-page content, no scroll needed.
-*/
+/* ══ NAVIGATION ══ */
 function showPage(id){
   document.getElementById('pg-land').classList.remove('on');
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
   document.getElementById(id).classList.add('on');
   document.getElementById('navbar').classList.add('vis');
-  document.getElementById('scroll-area').scrollTop=0; // instant, no animation
+  document.getElementById('scroll-area').scrollTop=0;
 }
 function goHome(){
+  // FIX: home যাওয়ার আগে player বন্ধ করো
+  stopPlayer();
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
   document.getElementById('pg-land').classList.add('on');
   document.getElementById('navbar').classList.remove('vis');
   setBc([]);
   document.getElementById('scroll-area').scrollTop=0;
 }
-function goToSubjects(){curSub=null;curVid=null;renderSubjects();showPage('pg-sub');setBc([{label:'Subjects'}]);}
+function goToSubjects(){
+  // FIX: subjects যাওয়ার আগে player বন্ধ করো
+  stopPlayer();
+  curSub=null;curVid=null;
+  renderSubjects();showPage('pg-sub');
+  setBc([{label:'Subjects'}]);
+}
 function goToVideos(subjectId){
-  curSub=subjectId;curVid=null;renderVideos(subjectId);showPage('pg-vid');
+  // FIX: videos যাওয়ার আগে player বন্ধ করো
+  stopPlayer();
+  curSub=subjectId;curVid=null;
+  renderVideos(subjectId);showPage('pg-vid');
   const sub=SUBJECTS.find(s=>s.id===subjectId);
   setBc([{label:'Subjects',fn:"goToSubjects()"},{label:sub.name}]);
 }
 function goToPlayer(subjectId,vi){
-  curSub=subjectId;curVid=vi;renderPlayer(subjectId,vi);showPage('pg-play');
+  // নতুন video দেখলে আগের player বন্ধ করো
+  stopPlayer();
+  curSub=subjectId;curVid=vi;
+  renderPlayer(subjectId,vi);showPage('pg-play');
   const sub=SUBJECTS.find(s=>s.id===subjectId);
   setBc([{label:'Subjects',fn:"goToSubjects()"},{label:sub.name,fn:`goToVideos('${subjectId}')`},{label:`Class ${vi+1}`}]);
 }
