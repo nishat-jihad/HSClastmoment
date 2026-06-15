@@ -6,662 +6,681 @@
 <title>HSC 2026 — পড়াশোনার আড্ডা</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+Bengali:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
-  :root {
-    --black:#0a0a0a;--white:#ffffff;--blue:#1a56ff;--blue-h:#0033cc;
-    --yellow:#ffd000;--yellow-h:#e6b800;--grey:#f2f2f2;--red:#e53e3e;--green:#22c55e;
-    --shadow:4px 4px 0px var(--black);--shadow-lg:6px 6px 0px var(--black);
-    --shadow-xl:8px 8px 0px var(--black);--border:2.5px solid var(--black);
-    --font-display:'Black Han Sans','Space Grotesk',sans-serif;
-    --font-body:'Space Grotesk','Noto Sans Bengali',sans-serif;
-    --font-bn:'Noto Sans Bengali',sans-serif;
-  }
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  html{scroll-behavior:smooth;}
-  body{font-family:var(--font-body);background:var(--white);color:var(--black);min-height:100vh;overflow-x:hidden;}
-  button{cursor:pointer;font-family:var(--font-body);}
-  a{text-decoration:none;color:inherit;}
+:root{
+  --black:#0a0a0a;--white:#ffffff;--blue:#1a56ff;--blue-h:#0033cc;
+  --yellow:#ffd000;--yellow-h:#e6b800;--grey:#f2f2f2;--red:#e53e3e;--green:#22c55e;
+  --shadow:4px 4px 0px var(--black);--shadow-lg:6px 6px 0px var(--black);
+  --shadow-xl:8px 8px 0px var(--black);--border:2.5px solid var(--black);
+  --font-display:'Black Han Sans','Space Grotesk',sans-serif;
+  --font-body:'Space Grotesk','Noto Sans Bengali',sans-serif;
+  --font-bn:'Noto Sans Bengali',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:auto;}
+body{font-family:var(--font-body);background:var(--white);color:var(--black);overflow-x:hidden;}
+button{cursor:pointer;font-family:var(--font-body);}
+a{text-decoration:none;color:inherit;}
 
-  /* PAGE SYSTEM — no more scrollTo(0,0), pages stack below navbar */
-  .page{display:none;}
-  .page.active{display:block;}
+/* ══ LAYOUT ══
+   The whole app is ONE scroll container.
+   Landing = full viewport height.
+   After clicking a button we just scrollTo the navbar position.
+*/
+#navbar{
+  position:sticky;top:0;z-index:100;background:var(--white);
+  border-bottom:var(--border);padding:0 24px;
+  display:none;align-items:center;justify-content:space-between;height:56px;
+}
+#navbar.vis{display:flex;}
+.navbar-brand{font-family:var(--font-display);font-size:1.1rem;letter-spacing:.02em;display:flex;align-items:center;gap:8px;cursor:pointer;}
+.navbar-brand .dot{display:inline-block;width:10px;height:10px;background:var(--blue);border:var(--border);}
+.navbar-breadcrumb{font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#555;display:flex;align-items:center;gap:8px;}
+.crumb{cursor:pointer;}.crumb:hover{text-decoration:underline;}
+.sep{color:#bbb;}
+.navbar-right{display:flex;align-items:center;gap:10px;}
+.btn-admin{background:var(--black);color:var(--white);border:var(--border);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;}
+.btn-admin:hover{background:#333;}
+.admin-badge{display:none;background:var(--yellow);color:var(--black);border:var(--border);font-size:.6rem;font-weight:700;letter-spacing:.1em;padding:2px 8px;text-transform:uppercase;}
 
-  /* NAVBAR */
-  .navbar{
-    position:sticky;top:0;z-index:100;background:var(--white);
-    border-bottom:var(--border);padding:0 24px;
-    display:flex;align-items:center;justify-content:space-between;height:56px;
-  }
-  .navbar-brand{font-family:var(--font-display);font-size:1.1rem;letter-spacing:.02em;display:flex;align-items:center;gap:8px;cursor:pointer;}
-  .navbar-brand span.dot{display:inline-block;width:10px;height:10px;background:var(--blue);border:var(--border);}
-  .navbar-breadcrumb{font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#555;display:flex;align-items:center;gap:8px;}
-  .navbar-breadcrumb .crumb{cursor:pointer;}.navbar-breadcrumb .crumb:hover{text-decoration:underline;}
-  .navbar-breadcrumb .sep{color:#bbb;}
-  .navbar-right{display:flex;align-items:center;gap:10px;}
-  .btn-admin-toggle{background:var(--black);color:var(--white);border:var(--border);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;cursor:pointer;}
-  .btn-admin-toggle:hover{background:#333;}
-  .admin-badge{display:inline-block;background:var(--yellow);color:var(--black);border:var(--border);font-size:.6rem;font-weight:700;letter-spacing:.1em;padding:2px 8px;text-transform:uppercase;}
+/* ══ PAGES ══ */
+.page{display:none;}
+.page.on{display:block;}
 
-  /* LANDING */
-  #page-landing{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:48px 24px;position:relative;overflow:hidden;}
-  #page-landing.active{display:flex;}
-  .landing-noise{position:absolute;inset:0;pointer-events:none;z-index:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,#00000008 39px,#00000008 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,#00000008 39px,#00000008 40px);}
-  .landing-badge{position:relative;z-index:1;display:inline-block;background:var(--black);color:var(--white);font-family:var(--font-body);font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:6px 16px;border:var(--border);margin-bottom:32px;}
-  .landing-headline{position:relative;z-index:1;font-family:var(--font-display);font-size:clamp(3rem,10vw,7.5rem);line-height:1;text-align:center;letter-spacing:-.02em;color:var(--black);margin-bottom:12px;max-width:900px;}
-  .landing-headline .accent{color:var(--blue);display:inline-block;background:var(--blue);color:var(--white);padding:0 12px;margin:0 4px;}
-  .landing-date-strip{position:relative;z-index:1;display:flex;align-items:center;gap:12px;margin:20px 0;}
-  .landing-date-box{background:var(--yellow);border:var(--border);box-shadow:var(--shadow);padding:8px 20px;font-family:var(--font-display);font-size:1.4rem;letter-spacing:.04em;}
-  .landing-date-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#555;}
-  .landing-subhead{position:relative;z-index:1;font-family:var(--font-bn);font-size:clamp(1rem,3vw,1.4rem);font-weight:600;color:#333;text-align:center;margin:24px 0 48px;line-height:1.6;max-width:520px;border-left:4px solid var(--black);padding-left:16px;text-align:left;}
-  .btn-primary{position:relative;z-index:1;background:var(--blue);color:var(--white);border:var(--border);box-shadow:var(--shadow-xl);font-family:var(--font-display);font-size:1.15rem;letter-spacing:.06em;text-transform:uppercase;padding:18px 48px;display:inline-flex;align-items:center;gap:12px;transition:transform .08s,box-shadow .08s;}
-  .btn-primary:hover{background:var(--blue-h);transform:translate(-2px,-2px);box-shadow:10px 10px 0 var(--black);}
-  .btn-primary:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--black);}
-  .btn-primary .arrow{font-size:1.4rem;}
-  .landing-counter{position:relative;z-index:1;margin-top:64px;display:flex;gap:0;border:var(--border);box-shadow:var(--shadow-lg);}
-  .counter-box{padding:16px 28px;text-align:center;border-right:var(--border);}
-  .counter-box:last-child{border-right:none;}
-  .counter-num{font-family:var(--font-display);font-size:2.2rem;line-height:1;color:var(--blue);}
-  .counter-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#777;margin-top:4px;}
+/* Landing */
+#pg-land{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100vh;padding:48px 24px;position:relative;overflow:hidden;
+}
+#pg-land.on{display:flex;}
+.noise{position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 39px,#00000008 39px,#00000008 40px),
+    repeating-linear-gradient(90deg,transparent,transparent 39px,#00000008 39px,#00000008 40px);}
+.z1{position:relative;z-index:1;}
+.badge-pill{display:inline-block;background:var(--black);color:var(--white);font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:6px 16px;border:var(--border);margin-bottom:32px;}
+.headline{font-family:var(--font-display);font-size:clamp(3rem,10vw,7.5rem);line-height:1;text-align:center;letter-spacing:-.02em;margin-bottom:12px;max-width:900px;}
+.headline .acc{display:inline-block;background:var(--blue);color:var(--white);padding:0 12px;margin:0 4px;}
+.date-strip{display:flex;align-items:center;gap:12px;margin:20px 0;}
+.date-box{background:var(--yellow);border:var(--border);box-shadow:var(--shadow);padding:8px 20px;font-family:var(--font-display);font-size:1.4rem;letter-spacing:.04em;}
+.date-lbl{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#555;}
+.subhead{font-family:var(--font-bn);font-size:clamp(1rem,3vw,1.4rem);font-weight:600;color:#333;margin:24px 0 48px;line-height:1.6;max-width:520px;border-left:4px solid var(--black);padding-left:16px;}
+.btn-primary{background:var(--blue);color:var(--white);border:var(--border);box-shadow:var(--shadow-xl);font-family:var(--font-display);font-size:1.15rem;letter-spacing:.06em;text-transform:uppercase;padding:18px 48px;display:inline-flex;align-items:center;gap:12px;transition:transform .08s,box-shadow .08s;}
+.btn-primary:hover{background:var(--blue-h);transform:translate(-2px,-2px);box-shadow:10px 10px 0 var(--black);}
+.btn-primary:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--black);}
+.counters{margin-top:64px;display:flex;border:var(--border);box-shadow:var(--shadow-lg);}
+.cbox{padding:16px 28px;text-align:center;border-right:var(--border);}
+.cbox:last-child{border-right:none;}
+.cnum{font-family:var(--font-display);font-size:2.2rem;line-height:1;color:var(--blue);}
+.clbl{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#777;margin-top:4px;}
 
-  /* SUBJECTS */
-  #page-subjects{padding-bottom:80px;}
-  #page-subjects.active{display:block;}
-  .section-header{padding:48px 32px 32px;border-bottom:var(--border);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;}
-  .section-eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#888;margin-bottom:8px;}
-  .section-title{font-family:var(--font-display);font-size:clamp(1.8rem,5vw,3rem);line-height:1.05;letter-spacing:-.01em;}
-  .section-count{font-size:.8rem;font-weight:700;background:var(--black);color:var(--white);padding:6px 14px;letter-spacing:.06em;}
-  .subjects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:0;border-left:var(--border);border-top:var(--border);margin:0;}
-  .subject-card{border-right:var(--border);border-bottom:var(--border);background:var(--white);padding:0;display:flex;flex-direction:column;transition:background .1s;position:relative;overflow:hidden;}
-  .subject-card:hover{background:var(--grey);}
-  .subject-thumb{height:140px;border-bottom:var(--border);display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative;overflow:hidden;}
-  .subject-thumb::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 8px,rgba(0,0,0,.03) 8px,rgba(0,0,0,.03) 9px);}
-  .subject-thumb.bangla{background:#fff0f0;}.subject-thumb.english{background:#f0f4ff;}.subject-thumb.ict{background:#f0fff4;}.subject-thumb.physics{background:#fffff0;}.subject-thumb.chemistry{background:#f5f0ff;}.subject-thumb.math{background:#fff5f0;}.subject-thumb.biology{background:#f0fffa;}
-  .subject-body{padding:20px 20px 16px;flex:1;}
-  .subject-index{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:6px;}
-  .subject-name{font-family:var(--font-display);font-size:1.4rem;line-height:1.1;margin-bottom:8px;}
-  .subject-meta{font-size:.75rem;color:#777;font-weight:500;}
-  .subject-footer{padding:0 16px 16px;}
-  .btn-subject{width:100%;background:var(--blue);color:var(--white);border:var(--border);box-shadow:var(--shadow);font-family:var(--font-body);font-size:.82rem;font-weight:700;letter-spacing:.04em;padding:10px 16px;text-align:left;display:flex;align-items:center;justify-content:space-between;transition:transform .08s,box-shadow .08s;}
-  .btn-subject:hover{background:var(--blue-h);transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--black);}
-  .btn-subject:active{transform:translate(1px,1px);box-shadow:2px 2px 0 var(--black);}
+/* Subjects */
+#pg-sub{padding-bottom:80px;}
+.sec-hdr{padding:48px 32px 32px;border-bottom:var(--border);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.sec-eye{font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#888;margin-bottom:8px;}
+.sec-ttl{font-family:var(--font-display);font-size:clamp(1.8rem,5vw,3rem);line-height:1.05;letter-spacing:-.01em;}
+.sec-cnt{font-size:.8rem;font-weight:700;background:var(--black);color:var(--white);padding:6px 14px;letter-spacing:.06em;}
+.sub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:28px;padding:28px 32px;}
+.sub-card{border:var(--border);background:var(--white);display:flex;flex-direction:column;transition:transform .12s,box-shadow .12s;box-shadow:var(--shadow);cursor:pointer;}
+.sub-card:hover{transform:translate(-4px,-4px);box-shadow:var(--shadow-xl);}
+.sub-img{height:190px;border-bottom:var(--border);position:relative;overflow:hidden;background:#111;}
+.sub-img img{width:100%;height:100%;object-fit:cover;display:block;opacity:.82;transition:opacity .2s;}
+.sub-card:hover .sub-img img{opacity:1;}
+.sub-img-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.6);color:#fff;font-family:var(--font-display);font-size:1.15rem;letter-spacing:.06em;padding:9px 14px;border-top:var(--border);}
+.sub-body{padding:20px 20px 16px;flex:1;}
+.sub-idx{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:6px;}
+.sub-name{font-family:var(--font-display);font-size:1.4rem;line-height:1.1;margin-bottom:8px;}
+.sub-meta{font-size:.75rem;color:#777;font-weight:500;}
+.sub-foot{padding:0 16px 16px;}
+.btn-sub{width:100%;background:var(--blue);color:var(--white);border:var(--border);box-shadow:var(--shadow);font-size:.82rem;font-weight:700;letter-spacing:.04em;padding:10px 16px;text-align:left;display:flex;align-items:center;justify-content:space-between;transition:transform .08s,box-shadow .08s;}
+.btn-sub:hover{background:var(--blue-h);transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--black);}
 
-  /* VIDEOS */
-  #page-videos{padding-bottom:80px;}
-  #page-videos.active{display:block;}
-  .videos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:0;border-left:var(--border);border-top:var(--border);}
-  .video-card{border-right:var(--border);border-bottom:var(--border);background:var(--white);display:flex;flex-direction:column;transition:background .1s;position:relative;}
-  .video-card:hover{background:var(--grey);}
-  .video-card.hidden-card{opacity:.5;}
-  .video-thumb-wrap{position:relative;aspect-ratio:16/9;border-bottom:var(--border);overflow:hidden;background:#111;cursor:pointer;}
-  .video-thumb-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .2s;}
-  .video-card:hover .video-thumb-wrap img{opacity:.85;}
-  .play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.18);transition:background .15s;}
-  .video-card:hover .play-overlay{background:rgba(0,0,0,.35);}
-  .play-btn{width:52px;height:52px;background:var(--white);border:2.5px solid var(--black);box-shadow:3px 3px 0 var(--black);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;padding-left:4px;transition:transform .1s;}
-  .video-card:hover .play-btn{transform:scale(1.1);}
-  .video-duration{position:absolute;bottom:8px;right:8px;background:var(--black);color:var(--white);font-size:.68rem;font-weight:700;padding:2px 7px;letter-spacing:.04em;}
-  .video-body{padding:16px 16px 12px;flex:1;}
-  .video-label{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:6px;}
-  .video-title{font-family:var(--font-body);font-size:.92rem;font-weight:700;line-height:1.4;color:var(--black);}
-  .video-footer{padding:0 12px 12px;display:flex;gap:8px;flex-wrap:wrap;}
-  .btn-watch{flex:1;background:var(--blue);color:var(--white);border:var(--border);box-shadow:var(--shadow);font-family:var(--font-body);font-size:.78rem;font-weight:700;letter-spacing:.03em;padding:9px 12px;text-align:center;transition:transform .08s,box-shadow .08s;}
-  .btn-watch:hover{background:var(--blue-h);transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--black);}
-  .btn-watch:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--black);}
+/* Videos */
+#pg-vid{padding-bottom:80px;}
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:28px;padding:28px 32px;}
+.vid-card{border:var(--border);background:var(--white);display:flex;flex-direction:column;transition:transform .12s,box-shadow .12s;box-shadow:var(--shadow);position:relative;}
+.vid-card:hover{transform:translate(-3px,-3px);box-shadow:var(--shadow-xl);}
+.vid-card.dim{opacity:.5;}
+.thumb-wrap{position:relative;aspect-ratio:16/9;border-bottom:var(--border);overflow:hidden;background:#111;cursor:pointer;}
+.thumb-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .2s;}
+.vid-card:hover .thumb-wrap img{opacity:.82;}
+.play-ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.18);transition:background .15s;}
+.vid-card:hover .play-ov{background:rgba(0,0,0,.38);}
+.play-btn{width:52px;height:52px;background:var(--white);border:2.5px solid var(--black);box-shadow:3px 3px 0 var(--black);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;padding-left:4px;transition:transform .1s;}
+.vid-card:hover .play-btn{transform:scale(1.1);}
+.v-dur{position:absolute;bottom:8px;right:8px;background:var(--black);color:var(--white);font-size:.68rem;font-weight:700;padding:2px 7px;letter-spacing:.04em;}
+.vid-body{padding:16px 16px 12px;flex:1;}
+.vid-lbl{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:6px;}
+.vid-ttl{font-size:.92rem;font-weight:700;line-height:1.4;}
+.vid-foot{padding:0 12px 12px;display:flex;gap:8px;flex-wrap:wrap;}
+.btn-watch{flex:1;background:var(--blue);color:var(--white);border:var(--border);box-shadow:var(--shadow);font-size:.78rem;font-weight:700;padding:9px 12px;text-align:center;transition:transform .08s,box-shadow .08s;}
+.btn-watch:hover{background:var(--blue-h);transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--black);}
+.priv-tag{position:absolute;top:0;left:0;background:#888;color:#fff;font-size:.55rem;font-weight:700;letter-spacing:.1em;padding:3px 10px;z-index:2;text-transform:uppercase;border-bottom:var(--border);border-right:var(--border);}
+/* admin controls */
+.adm-ctrl{display:none;gap:4px;padding:0 12px 10px;flex-wrap:wrap;}
+.admin-mode .adm-ctrl{display:flex;}
+.ab,.ab-del,.ab-pub{font-size:.68rem;font-weight:700;padding:5px 10px;border:var(--border);cursor:pointer;display:inline-flex;align-items:center;gap:4px;}
+.ab{background:#fff;color:var(--black);box-shadow:2px 2px 0 var(--black);}.ab:hover{background:var(--grey);}
+.ab-del{background:var(--red);color:#fff;box-shadow:2px 2px 0 var(--black);}.ab-del:hover{background:#c53030;}
+.ab-pub{background:var(--green);color:#fff;box-shadow:2px 2px 0 var(--black);}.ab-pub.priv{background:#888;}.ab-pub.priv:hover{background:#555;}
+.btn-add-vid{background:var(--yellow);color:var(--black);border:var(--border);box-shadow:var(--shadow);font-size:.78rem;font-weight:700;padding:8px 18px;display:none;align-items:center;gap:6px;transition:transform .08s;}
+.admin-mode .btn-add-vid{display:inline-flex;}
+.btn-add-vid:hover{background:var(--yellow-h);transform:translate(-1px,-1px);}
 
-  /* ADMIN BUTTONS on video cards */
-  .admin-controls{display:none;gap:4px;padding:0 12px 10px;flex-wrap:wrap;}
-  .admin-mode .admin-controls{display:flex;}
-  .btn-edit-v,.btn-del-v,.btn-pub-v{font-size:.68rem;font-weight:700;letter-spacing:.05em;padding:5px 10px;border:var(--border);cursor:pointer;display:inline-flex;align-items:center;gap:4px;}
-  .btn-edit-v{background:#fff;color:var(--black);box-shadow:2px 2px 0 var(--black);}
-  .btn-edit-v:hover{background:var(--grey);}
-  .btn-del-v{background:var(--red);color:#fff;box-shadow:2px 2px 0 var(--black);}
-  .btn-del-v:hover{background:#c53030;}
-  .btn-pub-v{background:var(--green);color:#fff;box-shadow:2px 2px 0 var(--black);}
-  .btn-pub-v:hover{background:#16a34a;}
-  .btn-pub-v.is-private{background:#888;}
-  .btn-pub-v.is-private:hover{background:#555;}
+/* Player */
+#pg-play{padding-bottom:80px;}
+.ply-lay{display:grid;grid-template-columns:1fr 340px;min-height:calc(100vh - 56px);}
+.ply-main{border-right:var(--border);}
+.ply-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-bottom:var(--border);}
+.ply-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
+.ply-info{padding:24px 28px;}
+.ply-badge{display:inline-block;background:var(--black);color:var(--white);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;margin-bottom:12px;}
+.ply-ttl{font-family:var(--font-display);font-size:clamp(1.2rem,3vw,1.7rem);line-height:1.2;margin-bottom:24px;}
+.ply-acts{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding-bottom:20px;border-bottom:var(--border);margin-bottom:20px;}
+.btn-pdf{background:var(--yellow);color:var(--black);border:var(--border);box-shadow:var(--shadow);font-size:.82rem;font-weight:700;padding:10px 22px;display:inline-flex;align-items:center;gap:8px;transition:transform .08s,box-shadow .08s;}
+.btn-pdf:hover{background:var(--yellow-h);transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--black);}
+.btn-back{background:var(--white);color:var(--black);border:var(--border);box-shadow:var(--shadow);font-size:.82rem;font-weight:700;padding:10px 22px;display:inline-flex;align-items:center;gap:8px;transition:transform .08s,box-shadow .08s;}
+.btn-back:hover{background:var(--grey);transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--black);}
+.ply-desc{font-size:.85rem;line-height:1.7;color:#444;font-family:var(--font-bn);}
+.ply-side{display:flex;flex-direction:column;}
+.side-hdr{padding:16px 20px;border-bottom:var(--border);background:var(--grey);}
+.side-hdr h3{font-family:var(--font-display);font-size:.9rem;letter-spacing:.04em;}
+.side-list{overflow-y:auto;flex:1;}
+.side-item{display:flex;gap:10px;align-items:flex-start;padding:12px 16px;border-bottom:var(--border);cursor:pointer;transition:background .1s;}
+.side-item:hover{background:var(--grey);}
+.side-item.act{background:#f0f4ff;border-left:4px solid var(--blue);}
+.side-th{width:80px;height:48px;flex-shrink:0;border:var(--border);overflow:hidden;background:#111;}
+.side-th img{width:100%;height:100%;object-fit:cover;display:block;}
+.side-num{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#aaa;margin-bottom:3px;}
+.side-ttl{font-size:.78rem;font-weight:700;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
 
-  /* ADD VIDEO button in video page header */
-  .btn-add-video{background:var(--yellow);color:var(--black);border:var(--border);box-shadow:var(--shadow);font-family:var(--font-body);font-size:.78rem;font-weight:700;padding:8px 18px;display:none;align-items:center;gap:6px;transition:transform .08s,box-shadow .08s;}
-  .admin-mode .btn-add-video{display:inline-flex;}
-  .btn-add-video:hover{background:var(--yellow-h);transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--black);}
+/* Modal */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center;padding:16px;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--white);border:var(--border);box-shadow:var(--shadow-xl);width:100%;max-width:520px;max-height:90vh;overflow-y:auto;}
+.modal-hdr{padding:20px 24px;border-bottom:var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-hdr h2{font-family:var(--font-display);font-size:1.1rem;letter-spacing:.04em;}
+.modal-x{background:none;border:none;font-size:1.4rem;cursor:pointer;padding:4px 8px;line-height:1;}.modal-x:hover{background:var(--grey);}
+.modal-body{padding:24px;}
+.fg{margin-bottom:18px;}
+.fl{display:block;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:6px;}
+.fi,.ft{width:100%;border:var(--border);padding:10px 14px;font-family:var(--font-body);font-size:.88rem;background:var(--white);outline:none;transition:box-shadow .1s;}
+.fi:focus,.ft:focus{box-shadow:var(--shadow);}
+.ft{resize:vertical;min-height:80px;}
+.trow{display:flex;align-items:center;gap:12px;}
+.tswitch{position:relative;width:44px;height:24px;flex-shrink:0;}
+.tswitch input{opacity:0;width:0;height:0;}
+.tslide{position:absolute;inset:0;background:#ccc;border:var(--border);cursor:pointer;transition:.2s;}
+.tslide::before{content:'';position:absolute;height:14px;width:14px;left:3px;bottom:3px;background:white;border:1.5px solid var(--black);transition:.2s;}
+.tswitch input:checked+.tslide{background:var(--green);}
+.tswitch input:checked+.tslide::before{transform:translateX(20px);}
+.modal-ftr{padding:16px 24px;border-top:var(--border);display:flex;gap:10px;justify-content:flex-end;}
+.btn-save{background:var(--blue);color:var(--white);border:var(--border);box-shadow:var(--shadow);font-size:.82rem;font-weight:700;padding:10px 24px;cursor:pointer;}
+.btn-save:hover{background:var(--blue-h);}
+.btn-cancel{background:var(--white);color:var(--black);border:var(--border);font-size:.82rem;font-weight:700;padding:10px 20px;cursor:pointer;}
+.btn-cancel:hover{background:var(--grey);}
 
-  /* PLAYER */
-  #page-player{padding-bottom:80px;}
-  #page-player.active{display:block;}
-  .player-layout{display:grid;grid-template-columns:1fr 340px;gap:0;min-height:calc(100vh - 56px);}
-  .player-main{border-right:var(--border);}
-  .player-video-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-bottom:var(--border);}
-  .player-video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
-  .player-info{padding:24px 28px;}
-  .player-subject-badge{display:inline-block;background:var(--black);color:var(--white);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;margin-bottom:12px;}
-  .player-title{font-family:var(--font-display);font-size:clamp(1.2rem,3vw,1.7rem);line-height:1.2;margin-bottom:24px;}
-  .player-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding-bottom:20px;border-bottom:var(--border);margin-bottom:20px;}
-  .btn-pdf{background:var(--yellow);color:var(--black);border:var(--border);box-shadow:var(--shadow);font-family:var(--font-body);font-size:.82rem;font-weight:700;letter-spacing:.04em;padding:10px 22px;display:inline-flex;align-items:center;gap:8px;transition:transform .08s,box-shadow .08s;text-decoration:none;}
-  .btn-pdf:hover{background:var(--yellow-h);transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--black);}
-  .btn-pdf:active{transform:translate(1px,1px);box-shadow:2px 2px 0 var(--black);}
-  .btn-back{background:var(--white);color:var(--black);border:var(--border);box-shadow:var(--shadow);font-family:var(--font-body);font-size:.82rem;font-weight:700;letter-spacing:.04em;padding:10px 22px;display:inline-flex;align-items:center;gap:8px;transition:transform .08s,box-shadow .08s;}
-  .btn-back:hover{background:var(--grey);transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--black);}
-  .player-desc{font-size:.85rem;line-height:1.7;color:#444;font-family:var(--font-bn);}
-  .player-sidebar{display:flex;flex-direction:column;}
-  .sidebar-header{padding:16px 20px;border-bottom:var(--border);background:var(--grey);}
-  .sidebar-header h3{font-family:var(--font-display);font-size:.9rem;letter-spacing:.04em;}
-  .sidebar-list{overflow-y:auto;flex:1;}
-  .sidebar-item{display:flex;gap:10px;align-items:flex-start;padding:12px 16px;border-bottom:var(--border);cursor:pointer;transition:background .1s;}
-  .sidebar-item:hover{background:var(--grey);}
-  .sidebar-item.active-video{background:#f0f4ff;border-left:4px solid var(--blue);}
-  .sidebar-thumb{width:80px;height:48px;flex-shrink:0;border:var(--border);overflow:hidden;background:#111;}
-  .sidebar-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
-  .sidebar-meta{flex:1;min-width:0;}
-  .sidebar-num{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#aaa;margin-bottom:3px;}
-  .sidebar-title{font-size:.78rem;font-weight:700;line-height:1.35;color:var(--black);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--black);color:var(--white);padding:10px 24px;border:var(--border);font-size:.82rem;font-weight:700;letter-spacing:.04em;z-index:9999;transition:transform .3s;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);}
 
-  /* MODAL */
-  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center;padding:16px;}
-  .modal-overlay.open{display:flex;}
-  .modal{background:var(--white);border:var(--border);box-shadow:var(--shadow-xl);width:100%;max-width:520px;max-height:90vh;overflow-y:auto;}
-  .modal-header{padding:20px 24px;border-bottom:var(--border);display:flex;align-items:center;justify-content:space-between;}
-  .modal-header h2{font-family:var(--font-display);font-size:1.1rem;letter-spacing:.04em;}
-  .modal-close{background:none;border:none;font-size:1.4rem;cursor:pointer;padding:4px 8px;line-height:1;}
-  .modal-close:hover{background:var(--grey);}
-  .modal-body{padding:24px;}
-  .form-group{margin-bottom:18px;}
-  .form-label{display:block;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:6px;}
-  .form-input,.form-textarea{width:100%;border:var(--border);padding:10px 14px;font-family:var(--font-body);font-size:.88rem;background:var(--white);outline:none;transition:box-shadow .1s;}
-  .form-input:focus,.form-textarea:focus{box-shadow:var(--shadow);}
-  .form-textarea{resize:vertical;min-height:80px;}
-  .form-toggle-row{display:flex;align-items:center;gap:12px;}
-  .toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0;}
-  .toggle-switch input{opacity:0;width:0;height:0;}
-  .toggle-slider{position:absolute;inset:0;background:#ccc;border:var(--border);cursor:pointer;transition:.2s;}
-  .toggle-slider::before{content:'';position:absolute;height:14px;width:14px;left:3px;bottom:3px;background:white;border:1.5px solid var(--black);transition:.2s;}
-  .toggle-switch input:checked+.toggle-slider{background:var(--green);}
-  .toggle-switch input:checked+.toggle-slider::before{transform:translateX(20px);}
-  .modal-footer{padding:16px 24px;border-top:var(--border);display:flex;gap:10px;justify-content:flex-end;}
-  .btn-modal-save{background:var(--blue);color:var(--white);border:var(--border);box-shadow:var(--shadow);font-family:var(--font-body);font-size:.82rem;font-weight:700;padding:10px 24px;cursor:pointer;}
-  .btn-modal-save:hover{background:var(--blue-h);}
-  .btn-modal-cancel{background:var(--white);color:var(--black);border:var(--border);font-family:var(--font-body);font-size:.82rem;font-weight:700;padding:10px 20px;cursor:pointer;}
-  .btn-modal-cancel:hover{background:var(--grey);}
-
-  /* PRIVATE RIBBON */
-  .private-ribbon{position:absolute;top:0;left:0;background:#888;color:#fff;font-size:.55rem;font-weight:700;letter-spacing:.1em;padding:3px 10px;z-index:2;text-transform:uppercase;border-bottom:var(--border);border-right:var(--border);}
-
-  /* RESPONSIVE */
-  @media(max-width:768px){
-    .player-layout{grid-template-columns:1fr;}
-    .player-main{border-right:none;}
-    .player-sidebar{border-top:var(--border);max-height:360px;}
-    .section-header{padding:28px 16px 20px;}
-    .subjects-grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));}
-    .videos-grid{grid-template-columns:1fr;}
-    .landing-headline{font-size:clamp(2.2rem,9vw,4rem);}
-    .counter-box{padding:12px 16px;}
-    .landing-subhead{font-size:1rem;}
-    .navbar{padding:0 14px;}
-    .player-info{padding:16px;}
-    .player-actions{gap:8px;}
-  }
-  @media(max-width:480px){
-    .subjects-grid{grid-template-columns:1fr;}
-    .landing-date-strip{flex-direction:column;align-items:flex-start;}
-    .landing-counter{flex-direction:column;border:none;box-shadow:none;gap:12px;}
-    .counter-box{border:var(--border);box-shadow:var(--shadow);border-right:var(--border)!important;}
-  }
-  .text-blue{color:var(--blue);}
-  #countdown{font-variant-numeric:tabular-nums;}
+@media(max-width:768px){
+  .ply-lay{grid-template-columns:1fr;}
+  .ply-main{border-right:none;}
+  .ply-side{border-top:var(--border);max-height:360px;}
+  .sec-hdr{padding:28px 16px 20px;}
+  .sub-grid,.vid-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));padding:16px;}
+  .headline{font-size:clamp(2.2rem,9vw,4rem);}
+  #navbar{padding:0 14px;}
+  .ply-info{padding:16px;}
+}
+@media(max-width:480px){
+  .sub-grid,.vid-grid{grid-template-columns:1fr;}
+  .date-strip{flex-direction:column;align-items:flex-start;}
+  .counters{flex-direction:column;border:none;box-shadow:none;gap:12px;}
+  .cbox{border:var(--border);box-shadow:var(--shadow);}
+}
+#countdown{font-variant-numeric:tabular-nums;}
 </style>
 </head>
 <body>
 
 <!-- NAVBAR -->
-<nav class="navbar" id="navbar" style="display:none;">
-  <div class="navbar-brand" onclick="goHome()">
-    <span class="dot"></span>HSC 2026
-  </div>
-  <div class="navbar-breadcrumb" id="breadcrumb"></div>
+<nav id="navbar">
+  <div class="navbar-brand" onclick="goHome()"><span class="dot"></span>HSC 2026</div>
+  <div class="navbar-breadcrumb" id="bc"></div>
   <div class="navbar-right">
-    <span class="admin-badge" id="admin-badge" style="display:none;">⚙ ADMIN</span>
-    <button class="btn-admin-toggle" onclick="toggleAdmin()">⚙ Admin</button>
+    <span class="admin-badge" id="adm-badge">⚙ ADMIN</span>
+    <button class="btn-admin" onclick="toggleAdmin()">⚙ Admin</button>
   </div>
 </nav>
 
 <!-- LANDING -->
-<section class="page active" id="page-landing">
-  <div class="landing-noise"></div>
-  <div class="landing-badge">✦ HSC 2026 EXAM COUNTDOWN ✦</div>
-  <h1 class="landing-headline">OUR HSC EXAM<br><span class="accent">02 JULY</span></h1>
-  <div class="landing-date-strip">
-    <div class="landing-date-label">EXAM DATE</div>
-    <div class="landing-date-box" id="countdown">Loading…</div>
-    <div class="landing-date-label">DAYS LEFT</div>
+<div id="pg-land" class="on">
+  <div class="noise"></div>
+  <div class="badge-pill z1">✦ HSC 2026 EXAM COUNTDOWN ✦</div>
+  <h1 class="headline z1">OUR HSC EXAM<br><span class="acc">02 JULY</span></h1>
+  <div class="date-strip z1">
+    <div class="date-lbl">EXAM DATE</div>
+    <div class="date-box" id="countdown">Loading…</div>
+    <div class="date-lbl">DAYS LEFT</div>
   </div>
-  <p class="landing-subhead">"আমরা মরার আগ পর্যন্ত আমাদের সর্বোচ্চ চেষ্টা করে যাব"</p>
-  <button class="btn-primary" onclick="goToSubjects()">Let's STUDY <span class="arrow">→</span></button>
-  <div class="landing-counter">
-    <div class="counter-box"><div class="counter-num">7</div><div class="counter-label">Subjects</div></div>
-    <div class="counter-box"><div class="counter-num" id="total-videos-count">0</div><div class="counter-label">Videos</div></div>
-    <div class="counter-box"><div class="counter-num">∞</div><div class="counter-label">Potential</div></div>
+  <p class="subhead z1">"আমরা মরার আগ পর্যন্ত আমাদের সর্বোচ্চ চেষ্টা করে যাব"</p>
+  <button class="btn-primary z1" onclick="goToSubjects()">Let's STUDY <span>→</span></button>
+  <div class="counters z1">
+    <div class="cbox"><div class="cnum">7</div><div class="clbl">Subjects</div></div>
+    <div class="cbox"><div class="cnum" id="total-v">0</div><div class="clbl">Videos</div></div>
+    <div class="cbox"><div class="cnum">∞</div><div class="clbl">Potential</div></div>
   </div>
-</section>
+</div>
 
 <!-- SUBJECTS -->
-<section class="page" id="page-subjects">
-  <div class="section-header">
-    <div>
-      <div class="section-eyebrow">✦ SELECT YOUR WEAPON ✦</div>
-      <h2 class="section-title">কোন বিষয়<br>পড়বে আজ?</h2>
-    </div>
-    <div class="section-count" id="subject-count">7 SUBJECTS</div>
+<div id="pg-sub" class="page">
+  <div class="sec-hdr">
+    <div><div class="sec-eye">✦ SELECT YOUR WEAPON ✦</div><h2 class="sec-ttl">কোন বিষয়<br>পড়বে আজ?</h2></div>
+    <div class="sec-cnt">7 SUBJECTS</div>
   </div>
-  <div class="subjects-grid" id="subjects-grid"></div>
-</section>
+  <div class="sub-grid" id="sub-grid"></div>
+</div>
 
 <!-- VIDEOS -->
-<section class="page" id="page-videos">
-  <div class="section-header">
-    <div>
-      <div class="section-eyebrow" id="videos-eyebrow">✦ VIDEOS ✦</div>
-      <h2 class="section-title" id="videos-title">Class Videos</h2>
-    </div>
+<div id="pg-vid" class="page">
+  <div class="sec-hdr">
+    <div><div class="sec-eye" id="vid-eye">✦ VIDEOS ✦</div><h2 class="sec-ttl" id="vid-ttl">Videos</h2></div>
     <div style="display:flex;align-items:center;gap:10px;">
-      <button class="btn-add-video" onclick="openAddVideoModal()">＋ Add Video</button>
-      <div class="section-count" id="videos-count">0 VIDEOS</div>
+      <button class="btn-add-vid" onclick="openAdd()">＋ Add Video</button>
+      <div class="sec-cnt" id="vid-cnt">0 VIDEOS</div>
     </div>
   </div>
-  <div class="videos-grid" id="videos-grid"></div>
-</section>
+  <div class="vid-grid" id="vid-grid"></div>
+</div>
 
 <!-- PLAYER -->
-<section class="page" id="page-player">
-  <div class="player-layout" id="player-layout"></div>
-</section>
+<div id="pg-play" class="page">
+  <div class="ply-lay" id="ply-lay"></div>
+</div>
 
-<!-- MODAL: Add/Edit Video -->
-<div class="modal-overlay" id="modal-overlay">
+<!-- MODAL -->
+<div class="modal-ov" id="modal-ov">
   <div class="modal">
-    <div class="modal-header">
-      <h2 id="modal-title">Add Video</h2>
-      <button class="modal-close" onclick="closeModal()">✕</button>
-    </div>
+    <div class="modal-hdr"><h2 id="modal-ttl">Add Video</h2><button class="modal-x" onclick="closeModal()">✕</button></div>
     <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">Video Title</label>
-        <input class="form-input" id="field-title" type="text" placeholder="ভিডিওর শিরোনাম লিখুন…">
-      </div>
-      <div class="form-group">
-        <label class="form-label">YouTube Video ID</label>
-        <input class="form-input" id="field-ytid" type="text" placeholder="e.g. dQw4w9WgXcQ">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Duration</label>
-        <input class="form-input" id="field-duration" type="text" placeholder="e.g. 45:30">
-      </div>
-      <div class="form-group">
-        <label class="form-label">PDF Link (Google Drive / URL)</label>
-        <input class="form-input" id="field-pdf" type="text" placeholder="https://drive.google.com/…">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Description</label>
-        <textarea class="form-textarea" id="field-desc" placeholder="ছোট বর্ণনা লিখুন…"></textarea>
-      </div>
-      <div class="form-group">
-        <div class="form-toggle-row">
-          <label class="toggle-switch">
-            <input type="checkbox" id="field-public" checked>
-            <span class="toggle-slider"></span>
-          </label>
-          <span style="font-size:.82rem;font-weight:600;">Public (visible to everyone)</span>
+      <div class="fg"><label class="fl">Video Title</label><input class="fi" id="f-title" placeholder="ভিডিওর শিরোনাম…"></div>
+      <div class="fg"><label class="fl">YouTube Video ID</label><input class="fi" id="f-ytid" placeholder="e.g. jegosLHD8vs"></div>
+      <div class="fg"><label class="fl">Duration</label><input class="fi" id="f-dur" placeholder="e.g. 45:30"></div>
+      <div class="fg"><label class="fl">PDF Link (Google Drive / URL)</label><input class="fi" id="f-pdf" placeholder="https://drive.google.com/…"></div>
+      <div class="fg"><label class="fl">Description</label><textarea class="ft" id="f-desc" placeholder="ছোট বর্ণনা…"></textarea></div>
+      <div class="fg">
+        <div class="trow">
+          <label class="tswitch"><input type="checkbox" id="f-pub" checked><span class="tslide"></span></label>
+          <span style="font-size:.82rem;font-weight:600;">Public (সবাই দেখতে পাবে)</span>
         </div>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn-modal-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-modal-save" onclick="saveVideo()">Save Video</button>
+    <div class="modal-ftr">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveVideo()">Save Video</button>
     </div>
   </div>
 </div>
 
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
 <script>
-/* ═══ DATA ═══ */
-let SUBJECTS = [
-  {id:"bangla",name:"Bangla",nameBn:"বাংলা",emoji:"📖",theme:"bangla",videos:[
+/* ══════════════════════════════════════════
+   SUBJECT IMAGES — free Unsplash photos
+══════════════════════════════════════════ */
+const IMGS = {
+  // Stack of old books — well-known Commons photo
+  bangla:    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Old_book_bindings.jpg/600px-Old_book_bindings.jpg",
+  // Fountain pen on paper
+  english:   "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/WriteNow.jpg/600px-WriteNow.jpg",
+  // Computer/circuit board
+  ict:       "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camponotus_flavomarginatus_ant.jpg/600px-Camponotus_flavomarginatus_ant.jpg",
+  // Plasma energy ball — very well known Commons file
+  physics:   "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Plasma-lamp_2.jpg/600px-Plasma-lamp_2.jpg",
+  // Test tubes in lab — well known
+  chemistry: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/KMnO4_solutions.jpg/600px-KMnO4_solutions.jpg",
+  // Chalkboard with equations
+  math:      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Simple_algebra_relationship.svg/600px-Simple_algebra_relationship.svg.png",
+  // Cell microscopy / nature
+  biology:   "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Gatto_europeo4.jpg/600px-Gatto_europeo4.jpg"
+};
+
+/* ══════════════════════════════════════════
+   DEFAULT DATA
+══════════════════════════════════════════ */
+const DEFAULT_SUBJECTS = [
+  {id:"bangla",name:"Bangla",nameBn:"বাংলা",videos:[
     {id:"v1",title:"বাংলা ১ম পত্র — গদ্য সাহিত্য বিশ্লেষণ",ytId:"MkpAiNhAKEE",duration:"45:22",pdfUrl:"https://drive.google.com/file/d/example_bangla_1",desc:"এই ক্লাসে আমরা HSC বাংলা ১ম পত্রের গদ্য অংশ বিশ্লেষণ করব।",public:true},
     {id:"v2",title:"বাংলা ২য় পত্র — ব্যাকরণ সম্পূর্ণ গাইড",ytId:"3vwpHqxbxMc",duration:"52:10",pdfUrl:"https://drive.google.com/file/d/example_bangla_2",desc:"বাংলা ব্যাকরণের সকল টপিক এক ক্লাসে।",public:true},
     {id:"v3",title:"কবিতা বিশ্লেষণ — সৃজনশীল প্রশ্নোত্তর",ytId:"ZCE8VqVNYAU",duration:"38:45",pdfUrl:"https://drive.google.com/file/d/example_bangla_3",desc:"সৃজনশীল প্রশ্নের জন্য কবিতা বিশ্লেষণ।",public:true},
-    {id:"v4",title:"রচনা লেখার কৌশল — সর্বোচ্চ নম্বর পাওয়ার টিপস",ytId:"NlKxpHFaWwk",duration:"29:30",pdfUrl:"https://drive.google.com/file/d/example_bangla_4",desc:"রচনায় ভালো নম্বর পেতে এই কৌশলগুলো অনুসরণ করো।",public:true}
+    {id:"v4",title:"রচনা লেখার কৌশল",ytId:"NlKxpHFaWwk",duration:"29:30",pdfUrl:"https://drive.google.com/file/d/example_bangla_4",desc:"রচনায় ভালো নম্বর পেতে এই কৌশলগুলো অনুসরণ করো।",public:true}
   ]},
-  {id:"english",name:"English",nameBn:"ইংরেজি",emoji:"🔤",theme:"english",videos:[
-    {id:"v1",title:"English 1st Paper — Reading Comprehension Mastery",ytId:"pnmUaEFV_wk",duration:"41:18",pdfUrl:"https://drive.google.com/file/d/example_eng_1",desc:"Master reading comprehension for HSC English 1st Paper.",public:true},
+  {id:"english",name:"English",nameBn:"ইংরেজি",videos:[
+    {id:"v1",title:"English 1st Paper — Reading Comprehension",ytId:"pnmUaEFV_wk",duration:"41:18",pdfUrl:"https://drive.google.com/file/d/example_eng_1",desc:"Master reading comprehension for HSC English 1st Paper.",public:true},
     {id:"v2",title:"English 2nd Paper — Grammar Complete Guide",ytId:"INbVMQtQpDo",duration:"55:00",pdfUrl:"https://drive.google.com/file/d/example_eng_2",desc:"Complete grammar guide covering all HSC topics.",public:true},
     {id:"v3",title:"Writing Skills — Paragraph, Email & Composition",ytId:"JJLDcIBxODc",duration:"47:33",pdfUrl:"https://drive.google.com/file/d/example_eng_3",desc:"How to write perfect paragraphs, emails and compositions.",public:true},
-    {id:"v4",title:"Seen & Unseen Comprehension — Full Practice",ytId:"3GwjfUFyY6M",duration:"36:14",pdfUrl:"https://drive.google.com/file/d/example_eng_4",desc:"Practice session for seen and unseen comprehension.",public:true},
+    {id:"v4",title:"Seen & Unseen Comprehension",ytId:"3GwjfUFyY6M",duration:"36:14",pdfUrl:"https://drive.google.com/file/d/example_eng_4",desc:"Practice session for seen and unseen comprehension.",public:true},
     {id:"v5",title:"English Dialogue & Completing Story",ytId:"Rh-BgWMN9p8",duration:"31:55",pdfUrl:"https://drive.google.com/file/d/example_eng_5",desc:"Tips and tricks for dialogue and story completion.",public:true}
   ]},
-  {id:"ict",name:"ICT",nameBn:"তথ্য ও যোগাযোগ প্রযুক্তি",emoji:"💻",theme:"ict",videos:[
+  {id:"ict",name:"ICT",nameBn:"তথ্য ও যোগাযোগ প্রযুক্তি",videos:[
     {id:"v1",title:"ICT অধ্যায় ১ — বিশ্ব ও বাংলাদেশ প্রেক্ষিত",ytId:"Y-kkFLQq9b4",duration:"50:12",pdfUrl:"https://drive.google.com/file/d/example_ict_1",desc:"ICT-র প্রথম অধ্যায়ের সকল গুরুত্বপূর্ণ টপিক।",public:true},
     {id:"v2",title:"ডেটা কমিউনিকেশন ও নেটওয়ার্কিং",ytId:"3QhU9jd03a0",duration:"44:30",pdfUrl:"https://drive.google.com/file/d/example_ict_2",desc:"নেটওয়ার্কিং ও ডেটা কমিউনিকেশনের বিস্তারিত।",public:true},
     {id:"v3",title:"প্রোগ্রামিং ভাষা — C প্রোগ্রামিং বেসিক",ytId:"I0SzgIMzSBQ",duration:"62:00",pdfUrl:"https://drive.google.com/file/d/example_ict_3",desc:"C প্রোগ্রামিং এর সকল বেসিক কনসেপ্ট।",public:true},
-    {id:"v4",title:"ডেটাবেজ ম্যানেজমেন্ট সিস্টেম — SQL",ytId:"7S_tz1z_5bA",duration:"48:22",pdfUrl:"https://drive.google.com/file/d/example_ict_4",desc:"SQL এবং ডেটাবেজের সম্পূর্ণ গাইড।",public:true},
-    {id:"v5",title:"ওয়েব ডিজাইন — HTML ও CSS পরিচিতি",ytId:"UB1O30fR-EE",duration:"39:45",pdfUrl:"https://drive.google.com/file/d/example_ict_5",desc:"ওয়েব ডিজাইনের মূল বিষয়গুলো সহজ ভাষায়।",public:true},
-    {id:"v6",title:"ICT সৃজনশীল প্রশ্নোত্তর — পূর্ণাঙ্গ প্রস্তুতি",ytId:"qNgx-ELNJnc",duration:"55:18",pdfUrl:"https://drive.google.com/file/d/example_ict_6",desc:"সৃজনশীল প্রশ্নের জন্য সম্পূর্ণ প্রস্তুতি।",public:true}
+    {id:"v4",title:"ডেটাবেজ ম্যানেজমেন্ট — SQL",ytId:"7S_tz1z_5bA",duration:"48:22",pdfUrl:"https://drive.google.com/file/d/example_ict_4",desc:"SQL এবং ডেটাবেজের সম্পূর্ণ গাইড।",public:true},
+    {id:"v5",title:"ওয়েব ডিজাইন — HTML ও CSS",ytId:"UB1O30fR-EE",duration:"39:45",pdfUrl:"https://drive.google.com/file/d/example_ict_5",desc:"ওয়েব ডিজাইনের মূল বিষয়গুলো সহজ ভাষায়।",public:true},
+    {id:"v6",title:"ICT সৃজনশীল প্রশ্নোত্তর",ytId:"qNgx-ELNJnc",duration:"55:18",pdfUrl:"https://drive.google.com/file/d/example_ict_6",desc:"সৃজনশীল প্রশ্নের জন্য সম্পূর্ণ প্রস্তুতি।",public:true}
   ]},
-  {id:"physics",name:"Physics",nameBn:"পদার্থবিজ্ঞান",emoji:"⚡",theme:"physics",videos:[
+  {id:"physics",name:"Physics",nameBn:"পদার্থবিজ্ঞান",videos:[
     {id:"v1",title:"পদার্থ অধ্যায় ১ — ভৌত জগৎ ও পরিমাপ",ytId:"ZihykvEOiZo",duration:"44:00",pdfUrl:"https://drive.google.com/file/d/example_phy_1",desc:"পদার্থবিজ্ঞানের প্রথম অধ্যায় বিস্তারিতভাবে।",public:true},
-    {id:"v2",title:"গতিবিদ্যা — নিউটনের সূত্র ও প্রয়োগ",ytId:"9x-Tz0MBrG4",duration:"58:30",pdfUrl:"https://drive.google.com/file/d/example_phy_2",desc:"নিউটনের গতিসূত্র সহজ উদাহরণ দিয়ে বোঝানো হয়েছে।",public:true},
+    {id:"v2",title:"গতিবিদ্যা — নিউটনের সূত্র ও প্রয়োগ",ytId:"9x-Tz0MBrG4",duration:"58:30",pdfUrl:"https://drive.google.com/file/d/example_phy_2",desc:"নিউটনের গতিসূত্র সহজ উদাহরণ দিয়ে বোঝানো।",public:true},
     {id:"v3",title:"তড়িৎ চুম্বকত্ব — সম্পূর্ণ অধ্যায়",ytId:"W2aD40p9_fA",duration:"67:15",pdfUrl:"https://drive.google.com/file/d/example_phy_3",desc:"তড়িৎ চুম্বকত্বের সকল সূত্র ও সমস্যা সমাধান।",public:true},
     {id:"v4",title:"আলোকবিজ্ঞান — প্রতিফলন ও প্রতিসরণ",ytId:"y8Yv4pnuzS8",duration:"52:40",pdfUrl:"https://drive.google.com/file/d/example_phy_4",desc:"আলোর ধর্ম, প্রতিফলন ও প্রতিসরণ।",public:true},
     {id:"v5",title:"আধুনিক পদার্থবিজ্ঞান — কোয়ান্টাম ও নিউক্লিয়ার",ytId:"FjHJ7FmV0M4",duration:"49:20",pdfUrl:"https://drive.google.com/file/d/example_phy_5",desc:"কোয়ান্টাম মেকানিক্স ও নিউক্লিয়ার ফিজিক্স।",public:true}
   ]},
-  {id:"chemistry",name:"Chemistry",nameBn:"রসায়ন",emoji:"🧪",theme:"chemistry",videos:[
+  {id:"chemistry",name:"Chemistry",nameBn:"রসায়ন",videos:[
     {id:"v1",title:"রসায়ন অধ্যায় ১ — পরমাণুর গঠন",ytId:"pU9MgAkdZRQ",duration:"46:10",pdfUrl:"https://drive.google.com/file/d/example_chem_1",desc:"পরমাণুর গঠন ও ইলেকট্রন বিন্যাস।",public:true},
-    {id:"v2",title:"রাসায়নিক বন্ধন — সম্পূর্ণ গাইড",ytId:"QqjcCvzWwww",duration:"53:00",pdfUrl:"https://drive.google.com/file/d/example_chem_2",desc:"আয়নিক, সমযোজী ও ধাতব বন্ধনের বিস্তারিত।",public:true},
-    {id:"v3",title:"জৈব রসায়ন — হাইড্রোকার্বন ও কার্যকরী মূলক",ytId:"9Ql9Q5Fqzf4",duration:"61:25",pdfUrl:"https://drive.google.com/file/d/example_chem_3",desc:"অ্যালকেন, অ্যালকিন, অ্যালকাইন সম্পর্কে বিস্তারিত।",public:true},
+    {id:"v2",title:"রাসায়নিক বন্ধন — সম্পূর্ণ গাইড",ytId:"QqjcCvzWwww",duration:"53:00",pdfUrl:"https://drive.google.com/file/d/example_chem_2",desc:"আয়নিক, সমযোজী ও ধাতব বন্ধন।",public:true},
+    {id:"v3",title:"জৈব রসায়ন — হাইড্রোকার্বন ও কার্যকরী মূলক",ytId:"9Ql9Q5Fqzf4",duration:"61:25",pdfUrl:"https://drive.google.com/file/d/example_chem_3",desc:"অ্যালকেন, অ্যালকিন, অ্যালকাইন।",public:true},
     {id:"v4",title:"রাসায়নিক বিক্রিয়া ও সাম্যবস্থা",ytId:"ANi709NF7K0",duration:"44:55",pdfUrl:"https://drive.google.com/file/d/example_chem_4",desc:"রাসায়নিক সাম্যবস্থা ও Le Chatelier নীতি।",public:true},
-    {id:"v5",title:"অ্যাসিড, ক্ষার ও লবণ — pH গণনা",ytId:"qgQCOJBlMjM",duration:"40:30",pdfUrl:"https://drive.google.com/file/d/example_chem_5",desc:"অ্যাসিড-ক্ষার তত্ত্ব ও pH-এর বিস্তারিত হিসাব।",public:true}
+    {id:"v5",title:"অ্যাসিড, ক্ষার ও লবণ — pH গণনা",ytId:"qgQCOJBlMjM",duration:"40:30",pdfUrl:"https://drive.google.com/file/d/example_chem_5",desc:"অ্যাসিড-ক্ষার তত্ত্ব ও pH।",public:true}
   ]},
-  {id:"math",name:"Higher Math",nameBn:"উচ্চতর গণিত",emoji:"📐",theme:"math",videos:[
-    {id:"v1",title:"বিন্দু, রেখা ও বৃত্ত — সম্পূর্ণ অধ্যায়",ytId:"n01EQdtTe-M",duration:"57:00",pdfUrl:"https://drive.google.com/file/d/example_math_1",desc:"স্থানাঙ্ক জ্যামিতির মৌলিক অধ্যায়।",public:true},
-    {id:"v2",title:"ক্যালকুলাস — অন্তরীকরণ সম্পূর্ণ গাইড",ytId:"WUvTyaaNkzM",duration:"65:40",pdfUrl:"https://drive.google.com/file/d/example_math_2",desc:"ডেরিভেটিভ ও অ্যান্টিডেরিভেটিভের সম্পূর্ণ টপিক।",public:true},
-    {id:"v3",title:"সমাকলন — নির্দিষ্ট ও অনির্দিষ্ট ইন্টিগ্রাল",ytId:"rfG8ce4nNh0",duration:"59:22",pdfUrl:"https://drive.google.com/file/d/example_math_3",desc:"Integration-এর সকল কৌশল ও প্য়োগ।",public:true},
-    {id:"v4",title:"ভেক্টর ও ত্রিমাত্রিক জ্যামিতি",ytId:"ml4NSzCQobk",duration:"48:15",pdfUrl:"https://drive.google.com/file/d/example_math_4",desc:"ভেক্টরের যোগ, বিয়োগ ও গুণ এবং তিন মাত্রার জ্যামিতি।",public:true},
-    {id:"v5",title:"সম্ভাবনা তত্ত্ব — পরিসংখ্যান ও সম্ভাবনা",ytId:"KzfWUEJjG18",duration:"42:08",pdfUrl:"https://drive.google.com/file/d/example_math_5",desc:"পরিসংখ্যান, মধ্যমা, গড় ও সম্ভাবনার হিসাব।",public:true},
-    {id:"v6",title:"ম্যাট্রিক্স ও নির্ণায়ক — সম্পূর্ণ অধ্যায়",ytId:"Ip3X9LOh2dk",duration:"51:33",pdfUrl:"https://drive.google.com/file/d/example_math_6",desc:"ম্যাট্রিক্সের যোগ, গুণ ও ডিটার্মিন্যান্ট।",public:true}
+  {id:"math",name:"Higher Math",nameBn:"উচ্চতর গণিত",videos:[
+    {id:"v1",title:"বিন্দু, রেখা ও বৃত্ত",ytId:"n01EQdtTe-M",duration:"57:00",pdfUrl:"https://drive.google.com/file/d/example_math_1",desc:"স্থানাঙ্ক জ্যামিতির মৌলিক অধ্যায়।",public:true},
+    {id:"v2",title:"ক্যালকুলাস — অন্তরীকরণ",ytId:"WUvTyaaNkzM",duration:"65:40",pdfUrl:"https://drive.google.com/file/d/example_math_2",desc:"ডেরিভেটিভ ও অ্যান্টিডেরিভেটিভ।",public:true},
+    {id:"v3",title:"সমাকলন — ইন্টিগ্রাল",ytId:"rfG8ce4nNh0",duration:"59:22",pdfUrl:"https://drive.google.com/file/d/example_math_3",desc:"Integration-এর সকল কৌশল।",public:true},
+    {id:"v4",title:"ভেক্টর ও ত্রিমাত্রিক জ্যামিতি",ytId:"ml4NSzCQobk",duration:"48:15",pdfUrl:"https://drive.google.com/file/d/example_math_4",desc:"ভেক্টরের যোগ, বিয়োগ ও গুণ।",public:true},
+    {id:"v5",title:"সম্ভাবনা তত্ত্ব ও পরিসংখ্যান",ytId:"KzfWUEJjG18",duration:"42:08",pdfUrl:"https://drive.google.com/file/d/example_math_5",desc:"মধ্যমা, গড় ও সম্ভাবনার হিসাব।",public:true},
+    {id:"v6",title:"ম্যাট্রিক্স ও নির্ণায়ক",ytId:"Ip3X9LOh2dk",duration:"51:33",pdfUrl:"https://drive.google.com/file/d/example_math_6",desc:"ম্যাট্রিক্সের যোগ, গুণ ও ডিটার্মিন্যান্ট।",public:true}
   ]},
-  {id:"biology",name:"Biology",nameBn:"জীববিজ্ঞান",emoji:"🧬",theme:"biology",videos:[
-    {id:"v1",title:"কোষ ও কোষের গঠন — উদ্ভিদ ও প্রাণী কোষ",ytId:"URUJD5NEXC8",duration:"48:30",pdfUrl:"https://drive.google.com/file/d/example_bio_1",desc:"কোষের অঙ্গাণু ও তাদের কার্যাবলী।",public:true},
-    {id:"v2",title:"উদ্ভিদের শারীরতত্ত্ব — সালোকসংশ্লেষণ",ytId:"OBvI84gOZAA",duration:"55:22",pdfUrl:"https://drive.google.com/file/d/example_bio_2",desc:"সালোকসংশ্লেষণের আলোক ও অন্ধকার পর্যায়।",public:true},
-    {id:"v3",title:"জেনেটিক্স — বংশগতি ও ভিন্নতা",ytId:"C5FkOPjIFOc",duration:"60:10",pdfUrl:"https://drive.google.com/file/d/example_bio_3",desc:"DNA, RNA ও প্রোটিন সংশ্লেষণের বিস্তারিত।",public:true},
+  {id:"biology",name:"Biology",nameBn:"জীববিজ্ঞান",videos:[
+    {id:"v1",title:"কোষ ও কোষের গঠন",ytId:"URUJD5NEXC8",duration:"48:30",pdfUrl:"https://drive.google.com/file/d/example_bio_1",desc:"কোষের অঙ্গাণু ও তাদের কার্যাবলী।",public:true},
+    {id:"v2",title:"সালোকসংশ্লেষণ",ytId:"OBvI84gOZAA",duration:"55:22",pdfUrl:"https://drive.google.com/file/d/example_bio_2",desc:"সালোকসংশ্লেষণের আলোক ও অন্ধকার পর্যায়।",public:true},
+    {id:"v3",title:"জেনেটিক্স — বংশগতি ও ভিন্নতা",ytId:"C5FkOPjIFOc",duration:"60:10",pdfUrl:"https://drive.google.com/file/d/example_bio_3",desc:"DNA, RNA ও প্রোটিন সংশ্লেষণ।",public:true},
     {id:"v4",title:"মানবদেহ — রক্ত সংবহন তন্ত্র",ytId:"9lZBhcBKFN0",duration:"43:55",pdfUrl:"https://drive.google.com/file/d/example_bio_4",desc:"হৃৎপিণ্ড, রক্তনালী ও রক্তের উপাদান।",public:true},
     {id:"v5",title:"বিবর্তন ও পরিবেশ বিজ্ঞান",ytId:"GhHOjC4oxh8",duration:"38:45",pdfUrl:"https://drive.google.com/file/d/example_bio_5",desc:"বিবর্তনের তত্ত্ব ও পরিবেশগত বাস্তুবিদ্যা।",public:true}
   ]}
 ];
 
-/* ═══ STATE ═══ */
-let currentSubjectId = null;
-let currentVideoIdx  = null;
-let adminMode        = false;
-let editingVideoId   = null; // null = adding new
+/* ══════════════════════════════════════════
+   PERSISTENCE — localStorage
+══════════════════════════════════════════ */
+const LS_KEY = 'hsc2026_subjects_v2';
 
-/* ═══ INIT ═══ */
+function loadData() {
+  try {
+    const saved = localStorage.getItem(LS_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Validate it's an array with the right structure
+      if (Array.isArray(parsed) && parsed.length === DEFAULT_SUBJECTS.length) {
+        return parsed;
+      }
+    }
+  } catch(e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_SUBJECTS)); // deep clone
+}
+
+function saveData() {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(SUBJECTS));
+  } catch(e) {}
+}
+
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+let SUBJECTS = loadData();
+let curSub = null, curVid = null, adminMode = false, editId = null;
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('total-videos-count').textContent = SUBJECTS.reduce((s,sub)=>s+sub.videos.length,0);
+  updateTotalCount();
   startCountdown();
   renderSubjects();
 });
 
-/* ═══ COUNTDOWN ═══ */
-function startCountdown() {
-  const examDate = new Date('2026-07-02T00:00:00');
-  function update() {
-    const diff = examDate - new Date();
-    if (diff <= 0) { document.getElementById('countdown').textContent = 'Exam Day!'; return; }
-    const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
-    document.getElementById('countdown').textContent = `${d}d ${h}h ${m}m ${s}s`;
-  }
-  update(); setInterval(update,1000);
+function updateTotalCount() {
+  document.getElementById('total-v').textContent = SUBJECTS.reduce((s,sub)=>s+sub.videos.length, 0);
 }
 
-/* ═══ ADMIN TOGGLE ═══ */
+/* ══════════════════════════════════════════
+   COUNTDOWN
+══════════════════════════════════════════ */
+function startCountdown() {
+  const exam = new Date('2026-07-02T00:00:00');
+  function up() {
+    const d = exam - new Date();
+    if (d <= 0) { document.getElementById('countdown').textContent = 'Exam Day!'; return; }
+    const dd=Math.floor(d/86400000), h=Math.floor((d%86400000)/3600000),
+          m=Math.floor((d%3600000)/60000), s=Math.floor((d%60000)/1000);
+    document.getElementById('countdown').textContent = `${dd}d ${h}h ${m}m ${s}s`;
+  }
+  up(); setInterval(up, 1000);
+}
+
+/* ══════════════════════════════════════════
+   ADMIN
+══════════════════════════════════════════ */
 function toggleAdmin() {
   adminMode = !adminMode;
   document.body.classList.toggle('admin-mode', adminMode);
-  document.getElementById('admin-badge').style.display = adminMode ? 'inline-block' : 'none';
-  document.querySelector('.btn-admin-toggle').textContent = adminMode ? '✕ Exit Admin' : '⚙ Admin';
-  // re-render current page if on videos
-  if (currentSubjectId && document.getElementById('page-videos').classList.contains('active')) {
-    renderVideos(currentSubjectId);
-  }
+  document.getElementById('adm-badge').style.display = adminMode ? 'inline-block' : 'none';
+  document.querySelector('.btn-admin').textContent = adminMode ? '✕ Exit Admin' : '⚙ Admin';
+  if (curSub && document.getElementById('pg-vid').classList.contains('on')) renderVideos(curSub);
 }
 
-/* ═══ SUBJECTS RENDER ═══ */
+/* ══════════════════════════════════════════
+   RENDER SUBJECTS
+══════════════════════════════════════════ */
 function renderSubjects() {
-  const grid = document.getElementById('subjects-grid');
-  grid.innerHTML = SUBJECTS.map((sub,i) => `
-    <div class="subject-card" onclick="goToVideos('${sub.id}')">
-      <div class="subject-thumb ${sub.theme}">${sub.emoji}</div>
-      <div class="subject-body">
-        <div class="subject-index">SUBJECT ${String(i+1).padStart(2,'0')}</div>
-        <div class="subject-name">${sub.name}</div>
-        <div class="subject-meta">${sub.nameBn} &nbsp;·&nbsp; ${sub.videos.length} videos</div>
+  document.getElementById('sub-grid').innerHTML = SUBJECTS.map((sub, i) => `
+    <div class="sub-card" onclick="goToVideos('${sub.id}')">
+      <div class="sub-img">
+        <img src="${IMGS[sub.id]}" alt="${sub.name}" loading="lazy"
+          onerror="this.parentElement.style.background='#222';this.style.display='none'"/>
+        <div class="sub-img-label">${sub.name}</div>
       </div>
-      <div class="subject-footer">
-        <button class="btn-subject" onclick="event.stopPropagation();goToVideos('${sub.id}')">
+      <div class="sub-body">
+        <div class="sub-idx">SUBJECT ${String(i+1).padStart(2,'0')}</div>
+        <div class="sub-name">${sub.name}</div>
+        <div class="sub-meta">${sub.nameBn} &nbsp;·&nbsp; ${sub.videos.length} videos</div>
+      </div>
+      <div class="sub-foot">
+        <button class="btn-sub" onclick="event.stopPropagation();goToVideos('${sub.id}')">
           Let's cook ${sub.name} <span>→</span>
         </button>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-/* ═══ VIDEOS RENDER ═══ */
+/* ══════════════════════════════════════════
+   RENDER VIDEOS
+══════════════════════════════════════════ */
 function renderVideos(subjectId) {
   const sub = SUBJECTS.find(s=>s.id===subjectId);
   if (!sub) return;
-  document.getElementById('videos-eyebrow').textContent = `✦ ${sub.name.toUpperCase()} ✦`;
-  document.getElementById('videos-title').textContent   = sub.nameBn;
-  document.getElementById('videos-count').textContent   = `${sub.videos.length} VIDEOS`;
-
-  // In non-admin mode only show public videos
-  const visibleVideos = adminMode ? sub.videos : sub.videos.filter(v=>v.public!==false);
-
-  const grid = document.getElementById('videos-grid');
-  grid.innerHTML = visibleVideos.map((v,i) => {
-    const realIdx = sub.videos.indexOf(v);
-    const isPrivate = v.public === false;
-    return `
-    <div class="video-card${isPrivate&&adminMode?' hidden-card':''}">
-      ${isPrivate&&adminMode?'<div class="private-ribbon">🔒 Private</div>':''}
-      <div class="video-thumb-wrap" onclick="goToPlayer('${subjectId}',${realIdx})">
+  document.getElementById('vid-eye').textContent = `✦ ${sub.name.toUpperCase()} ✦`;
+  document.getElementById('vid-ttl').textContent = sub.nameBn;
+  document.getElementById('vid-cnt').textContent = `${sub.videos.length} VIDEOS`;
+  const list = adminMode ? sub.videos : sub.videos.filter(v=>v.public!==false);
+  document.getElementById('vid-grid').innerHTML = list.map(v => {
+    const ri = sub.videos.indexOf(v);
+    const priv = v.public === false;
+    return `<div class="vid-card${priv&&adminMode?' dim':''}">
+      ${priv&&adminMode?'<div class="priv-tag">🔒 Private</div>':''}
+      <div class="thumb-wrap" onclick="goToPlayer('${subjectId}',${ri})">
         <img src="https://img.youtube.com/vi/${v.ytId}/mqdefault.jpg" alt="${v.title}" loading="lazy"
-          onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22320%22 height=%22180%22><rect width=%22320%22 height=%22180%22 fill=%22%23222%22/><text x=%22160%22 y=%2295%22 fill=%22%23555%22 text-anchor=%22middle%22 font-size=%2218%22>▶</text></svg>'"/>
-        <div class="play-overlay"><div class="play-btn">▶</div></div>
-        <div class="video-duration">${v.duration}</div>
+          onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22320%22 height=%22180%22><rect width=%22320%22 height=%22180%22 fill=%22%23222%22/><text x=%22160%22 y=%2295%22 fill=%22%23555%22 text-anchor=%22middle%22 font-size=%2224%22>▶</text></svg>'"/>
+        <div class="play-ov"><div class="play-btn">▶</div></div>
+        <div class="v-dur">${v.duration}</div>
       </div>
-      <div class="video-body">
-        <div class="video-label">CLASS ${String(realIdx+1).padStart(2,'0')} · VIDEO TITLE</div>
-        <div class="video-title">${v.title}</div>
+      <div class="vid-body">
+        <div class="vid-lbl">CLASS ${String(ri+1).padStart(2,'0')} · VIDEO</div>
+        <div class="vid-ttl">${v.title}</div>
       </div>
-      <div class="video-footer">
-        <button class="btn-watch" onclick="goToPlayer('${subjectId}',${realIdx})">See the full video →</button>
+      <div class="vid-foot">
+        <button class="btn-watch" onclick="goToPlayer('${subjectId}',${ri})">See the full video →</button>
       </div>
-      <div class="admin-controls">
-        <button class="btn-edit-v" onclick="openEditVideoModal('${subjectId}','${v.id}')">✏ Edit</button>
-        <button class="btn-del-v" onclick="deleteVideo('${subjectId}','${v.id}')">✕ Remove</button>
-        <button class="btn-pub-v ${isPrivate?'is-private':''}" onclick="togglePublic('${subjectId}','${v.id}')">
-          ${isPrivate?'🔒 Make Public':'🌐 Public'}
+      <div class="adm-ctrl">
+        <button class="ab" onclick="openEdit('${subjectId}','${v.id}')">✏ Edit</button>
+        <button class="ab-del" onclick="delVideo('${subjectId}','${v.id}')">✕ Remove</button>
+        <button class="ab-pub ${priv?'priv':''}" onclick="togglePub('${subjectId}','${v.id}')">
+          ${priv?'🔒 Make Public':'🌐 Public'}
         </button>
       </div>
     </div>`;
   }).join('');
 }
 
-/* ═══ PLAYER RENDER ═══ */
-function renderPlayer(subjectId, videoIdx) {
-  const sub   = SUBJECTS.find(s=>s.id===subjectId);
-  const video = sub.videos[videoIdx];
-  const layout = document.getElementById('player-layout');
-  layout.innerHTML = `
-    <div class="player-main">
-      <div class="player-video-wrap">
-        <iframe src="https://www.youtube.com/embed/${video.ytId}?autoplay=1&rel=0&modestbranding=1"
-          title="${video.title}" frameborder="0"
+/* ══════════════════════════════════════════
+   RENDER PLAYER
+══════════════════════════════════════════ */
+function renderPlayer(subjectId, vi) {
+  const sub = SUBJECTS.find(s=>s.id===subjectId);
+  const v = sub.videos[vi];
+  document.getElementById('ply-lay').innerHTML = `
+    <div class="ply-main">
+      <div class="ply-wrap">
+        <iframe src="https://www.youtube.com/embed/${v.ytId}?autoplay=1&rel=0&modestbranding=1"
+          title="${v.title}" frameborder="0"
           allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
       </div>
-      <div class="player-info">
-        <div class="player-subject-badge">${sub.name} — CLASS ${String(videoIdx+1).padStart(2,'0')}</div>
-        <h1 class="player-title">${video.title}</h1>
-        <div class="player-actions">
-          <a class="btn-pdf" href="${video.pdfUrl}" target="_blank" rel="noopener">📄 PDF ডাউনলোড</a>
+      <div class="ply-info">
+        <div class="ply-badge">${sub.name} — CLASS ${String(vi+1).padStart(2,'0')}</div>
+        <h1 class="ply-ttl">${v.title}</h1>
+        <div class="ply-acts">
+          <a class="btn-pdf" href="${v.pdfUrl}" target="_blank" rel="noopener">📄 PDF ডাউনলোড</a>
           <button class="btn-back" onclick="goToVideos('${subjectId}')">← Back to ${sub.name}</button>
-          ${adminMode?`<button class="btn-edit-v" style="border:2.5px solid #0a0a0a;padding:10px 18px;font-size:.8rem;" onclick="openEditVideoModal('${subjectId}','${video.id}')">✏ Edit</button>`:''}
+          ${adminMode?`<button class="ab" style="border:2.5px solid #0a0a0a;padding:10px 18px;font-size:.8rem;" onclick="openEdit('${subjectId}','${v.id}')">✏ Edit</button>`:''}
         </div>
-        <p class="player-desc">${video.desc}</p>
+        <p class="ply-desc">${v.desc}</p>
       </div>
     </div>
-    <aside class="player-sidebar">
-      <div class="sidebar-header"><h3>${sub.name} — Playlist (${sub.videos.length})</h3></div>
-      <div class="sidebar-list">
-        ${sub.videos.map((v,i)=>`
-          <div class="sidebar-item ${i===videoIdx?'active-video':''}" onclick="goToPlayer('${subjectId}',${i})">
-            <div class="sidebar-thumb"><img src="https://img.youtube.com/vi/${v.ytId}/default.jpg" alt="${v.title}" loading="lazy" onerror="this.style.background='#333'"/></div>
-            <div class="sidebar-meta">
-              <div class="sidebar-num">CLASS ${String(i+1).padStart(2,'0')} · ${v.duration}</div>
-              <div class="sidebar-title">${v.title}</div>
+    <aside class="ply-side">
+      <div class="side-hdr"><h3>${sub.name} — Playlist (${sub.videos.length})</h3></div>
+      <div class="side-list">
+        ${sub.videos.map((vv,i)=>`
+          <div class="side-item ${i===vi?'act':''}" onclick="goToPlayer('${subjectId}',${i})">
+            <div class="side-th"><img src="https://img.youtube.com/vi/${vv.ytId}/default.jpg" loading="lazy" onerror="this.style.background='#333'"/></div>
+            <div style="flex:1;min-width:0;">
+              <div class="side-num">CLASS ${String(i+1).padStart(2,'0')} · ${vv.duration}</div>
+              <div class="side-ttl">${vv.title}</div>
             </div>
           </div>`).join('')}
       </div>
     </aside>`;
 }
 
-/* ═══ MODAL ═══ */
-function openAddVideoModal() {
-  editingVideoId = null;
-  document.getElementById('modal-title').textContent = 'Add Video';
-  document.getElementById('field-title').value    = '';
-  document.getElementById('field-ytid').value     = '';
-  document.getElementById('field-duration').value = '';
-  document.getElementById('field-pdf').value      = '';
-  document.getElementById('field-desc').value     = '';
-  document.getElementById('field-public').checked = true;
-  document.getElementById('modal-overlay').classList.add('open');
+/* ══════════════════════════════════════════
+   MODAL
+══════════════════════════════════════════ */
+function openAdd() {
+  editId = null;
+  document.getElementById('modal-ttl').textContent = 'Add Video';
+  ['title','ytid','dur','pdf','desc'].forEach(f=>document.getElementById('f-'+f).value='');
+  document.getElementById('f-pub').checked = true;
+  document.getElementById('modal-ov').classList.add('open');
 }
-
-function openEditVideoModal(subjectId, videoId) {
-  const sub   = SUBJECTS.find(s=>s.id===subjectId);
-  const video = sub.videos.find(v=>v.id===videoId);
-  if (!video) return;
-  editingVideoId = {subjectId, videoId};
-  document.getElementById('modal-title').textContent = 'Edit Video';
-  document.getElementById('field-title').value    = video.title;
-  document.getElementById('field-ytid').value     = video.ytId;
-  document.getElementById('field-duration').value = video.duration;
-  document.getElementById('field-pdf').value      = video.pdfUrl;
-  document.getElementById('field-desc').value     = video.desc;
-  document.getElementById('field-public').checked = video.public !== false;
-  document.getElementById('modal-overlay').classList.add('open');
+function openEdit(subjectId, videoId) {
+  const sub = SUBJECTS.find(s=>s.id===subjectId);
+  const v = sub.videos.find(x=>x.id===videoId);
+  if (!v) return;
+  editId = {subjectId, videoId};
+  document.getElementById('modal-ttl').textContent = 'Edit Video';
+  document.getElementById('f-title').value = v.title;
+  document.getElementById('f-ytid').value  = v.ytId;
+  document.getElementById('f-dur').value   = v.duration;
+  document.getElementById('f-pdf').value   = v.pdfUrl;
+  document.getElementById('f-desc').value  = v.desc;
+  document.getElementById('f-pub').checked = v.public !== false;
+  document.getElementById('modal-ov').classList.add('open');
 }
-
 function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('open');
-  editingVideoId = null;
+  document.getElementById('modal-ov').classList.remove('open');
+  editId = null;
 }
-
 function saveVideo() {
-  const title    = document.getElementById('field-title').value.trim();
-  const ytId     = document.getElementById('field-ytid').value.trim();
-  const duration = document.getElementById('field-duration').value.trim();
-  const pdfUrl   = document.getElementById('field-pdf').value.trim();
-  const desc     = document.getElementById('field-desc').value.trim();
-  const pub      = document.getElementById('field-public').checked;
-
+  const title = document.getElementById('f-title').value.trim();
+  const ytId  = document.getElementById('f-ytid').value.trim();
+  const dur   = document.getElementById('f-dur').value.trim();
+  const pdf   = document.getElementById('f-pdf').value.trim();
+  const desc  = document.getElementById('f-desc').value.trim();
+  const pub   = document.getElementById('f-pub').checked;
   if (!title||!ytId) { alert('Title and YouTube ID are required.'); return; }
-
-  if (editingVideoId) {
-    // EDIT
-    const sub   = SUBJECTS.find(s=>s.id===editingVideoId.subjectId);
-    const video = sub.videos.find(v=>v.id===editingVideoId.videoId);
-    video.title    = title;
-    video.ytId     = ytId;
-    video.duration = duration||video.duration;
-    video.pdfUrl   = pdfUrl||video.pdfUrl;
-    video.desc     = desc||video.desc;
-    video.public   = pub;
+  if (editId) {
+    const sub = SUBJECTS.find(s=>s.id===editId.subjectId);
+    const v   = sub.videos.find(x=>x.id===editId.videoId);
+    Object.assign(v, {title, ytId, duration:dur||v.duration, pdfUrl:pdf||v.pdfUrl, desc:desc||v.desc, public:pub});
     closeModal();
-    // If on player page, re-render player
-    if (document.getElementById('page-player').classList.contains('active')) {
-      renderPlayer(editingVideoId.subjectId, sub.videos.indexOf(video));
-    } else {
-      renderVideos(currentSubjectId);
-    }
+    saveData();
+    toast('✓ Video updated!');
+    if (document.getElementById('pg-play').classList.contains('on')) renderPlayer(editId.subjectId, sub.videos.indexOf(v));
+    else renderVideos(curSub);
   } else {
-    // ADD
-    const sub = SUBJECTS.find(s=>s.id===currentSubjectId);
-    const newId = 'v'+(sub.videos.length+1+Date.now()).toString(36);
-    sub.videos.push({id:newId,title,ytId,duration:duration||'--',pdfUrl:pdfUrl||'#',desc,public:pub});
+    const sub = SUBJECTS.find(s=>s.id===curSub);
+    sub.videos.push({id:'v'+Date.now().toString(36), title, ytId, duration:dur||'--', pdfUrl:pdf||'#', desc, public:pub});
     closeModal();
-    renderVideos(currentSubjectId);
-    document.getElementById('videos-count').textContent = `${sub.videos.length} VIDEOS`;
-    document.getElementById('total-videos-count').textContent = SUBJECTS.reduce((s,sub)=>s+sub.videos.length,0);
+    saveData();
+    updateTotalCount();
+    renderVideos(curSub);
+    toast('✓ Video added!');
   }
 }
-
-function deleteVideo(subjectId, videoId) {
-  if (!confirm('Remove this video?')) return;
+function delVideo(subjectId, videoId) {
+  if (!confirm('এই ভিডিও মুছে ফেলবে?')) return;
   const sub = SUBJECTS.find(s=>s.id===subjectId);
   sub.videos = sub.videos.filter(v=>v.id!==videoId);
+  saveData();
+  updateTotalCount();
   renderVideos(subjectId);
-  document.getElementById('videos-count').textContent = `${sub.videos.length} VIDEOS`;
-  document.getElementById('total-videos-count').textContent = SUBJECTS.reduce((s,sub)=>s+sub.videos.length,0);
+  toast('✓ Video removed!');
+}
+function togglePub(subjectId, videoId) {
+  const sub = SUBJECTS.find(s=>s.id===subjectId);
+  const v   = sub.videos.find(x=>x.id===videoId);
+  v.public  = !v.public;
+  saveData();
+  renderVideos(subjectId);
+  toast(v.public ? '🌐 Made public' : '🔒 Set to private');
 }
 
-function togglePublic(subjectId, videoId) {
-  const sub   = SUBJECTS.find(s=>s.id===subjectId);
-  const video = sub.videos.find(v=>v.id===videoId);
-  video.public = video.public === false ? true : false;
-  renderVideos(subjectId);
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+let _toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(()=>el.classList.remove('show'), 2200);
 }
 
-/* ═══ NAVIGATION — scroll to content instead of top ═══ */
+/* ══════════════════════════════════════════
+   NAVIGATION
+   FIX: after switching page, scroll to
+   top of document (where navbar is) so
+   content is visible immediately — no
+   more "appears below the fold" issue.
+══════════════════════════════════════════ */
 function showPage(id) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const el = document.getElementById(id);
-  el.classList.add('active');
-  // Scroll navbar into view so page content is visible right below it
-  const navbar = document.getElementById('navbar');
-  if (navbar.style.display !== 'none') {
-    navbar.scrollIntoView({behavior:'smooth', block:'start'});
-  }
+  // Hide landing
+  document.getElementById('pg-land').classList.remove('on');
+  // Hide all inner pages
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  // Show target
+  document.getElementById(id).classList.add('on');
+  // Show navbar
+  document.getElementById('navbar').classList.add('vis');
+  // Scroll instantly to very top so sticky navbar is visible
+  window.scrollTo(0, 0);
 }
 
 function goHome() {
-  document.getElementById('navbar').style.display = 'none';
-  showPage('page-landing');
-  setBreadcrumb([]);
-  window.scrollTo({top:0,behavior:'smooth'});
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('pg-land').classList.add('on');
+  document.getElementById('navbar').classList.remove('vis');
+  setBc([]);
+  window.scrollTo(0, 0);
 }
-
 function goToSubjects() {
-  document.getElementById('navbar').style.display = 'flex';
-  currentSubjectId = null; currentVideoIdx = null;
+  curSub = null; curVid = null;
   renderSubjects();
-  showPage('page-subjects');
-  setBreadcrumb([{label:'Subjects'}]);
+  showPage('pg-sub');
+  setBc([{label:'Subjects'}]);
 }
-
 function goToVideos(subjectId) {
-  currentSubjectId = subjectId; currentVideoIdx = null;
+  curSub = subjectId; curVid = null;
   renderVideos(subjectId);
-  showPage('page-videos');
+  showPage('pg-vid');
   const sub = SUBJECTS.find(s=>s.id===subjectId);
-  setBreadcrumb([{label:'Subjects',action:"goToSubjects()"},{label:sub.name}]);
+  setBc([{label:'Subjects',fn:"goToSubjects()"},{label:sub.name}]);
 }
-
-function goToPlayer(subjectId, videoIdx) {
-  currentSubjectId = subjectId; currentVideoIdx = videoIdx;
-  renderPlayer(subjectId, videoIdx);
-  showPage('page-player');
-  const sub   = SUBJECTS.find(s=>s.id===subjectId);
-  const video = sub.videos[videoIdx];
-  setBreadcrumb([
-    {label:'Subjects',action:"goToSubjects()"},
-    {label:sub.name,action:`goToVideos('${subjectId}')`},
-    {label:`Class ${videoIdx+1}`}
+function goToPlayer(subjectId, vi) {
+  curSub = subjectId; curVid = vi;
+  renderPlayer(subjectId, vi);
+  showPage('pg-play');
+  const sub = SUBJECTS.find(s=>s.id===subjectId);
+  setBc([
+    {label:'Subjects',fn:"goToSubjects()"},
+    {label:sub.name,fn:`goToVideos('${subjectId}')`},
+    {label:`Class ${vi+1}`}
   ]);
 }
-
-function setBreadcrumb(crumbs) {
-  document.getElementById('breadcrumb').innerHTML = crumbs.map((c,i)=>{
-    const isLast = i===crumbs.length-1;
-    const crumb  = c.action?`<span class="crumb" onclick="${c.action}">${c.label}</span>`:`<span>${c.label}</span>`;
-    return crumb+(!isLast?'<span class="sep">›</span>':'');
+function setBc(crumbs) {
+  document.getElementById('bc').innerHTML = crumbs.map((c,i)=>{
+    const last = i===crumbs.length-1;
+    return (c.fn?`<span class="crumb" onclick="${c.fn}">${c.label}</span>`:`<span>${c.label}</span>`)
+           +(!last?'<span class="sep">›</span>':'');
   }).join('');
 }
 
-// Close modal on overlay click
-document.getElementById('modal-overlay').addEventListener('click', function(e){
-  if(e.target===this) closeModal();
-});
+document.getElementById('modal-ov').addEventListener('click',function(e){if(e.target===this)closeModal();});
 </script>
 </body>
 </html>
