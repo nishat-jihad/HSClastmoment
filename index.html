@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+Bengali:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+
 :root{
   --black:#0a0a0a;--white:#fff;--blue:#1a56ff;--blue-h:#0033cc;
   --yellow:#ffd000;--yellow-h:#e6b800;--grey:#f2f2f2;--red:#e53e3e;--green:#22c55e;
@@ -236,6 +237,10 @@ a{text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;}
   /* on mobile player sidebar scrolls compactly */
   .side-list{max-height:260px;}
 }
+
+  .click-hint{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:0;margin-top:0;}
+  .hint-text{font-family:'Noto Sans Bengali',sans-serif;font-size:clamp(.9rem,2.5vw,1.1rem);font-weight:700;color:#0a0a0a;transform:rotate(-4deg);display:inline-block;background:var(--yellow);padding:4px 14px;border:2.5px solid #0a0a0a;box-shadow:3px 3px 0 #0a0a0a;}
+  .hint-arrow{width:clamp(60px,10vw,80px);height:auto;transform:rotate(10deg);margin-top:2px;}
 </style>
 </head>
 <body>
@@ -264,6 +269,13 @@ a{text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;}
         <div class="date-box" id="countdown">Loading…</div>
         <div class="date-lbl">DAYS LEFT</div>
       </div>
+      <div class="click-hint z1">
+  <span class="hint-text">এখানে ক্লিক করো!</span>
+  <svg class="hint-arrow" viewBox="0 0 80 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 8 C 20 4, 50 30, 72 32" stroke="#0a0a0a" stroke-width="2.5" stroke-dasharray="6 4" fill="none"/>
+    <path d="M65 26 L72 32 L64 36" stroke="#0a0a0a" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</div>
       <p class="subhead z1">"We Will Try our Best"</p>
       <button class="btn-primary z1" onclick="goToSubjects()">Let's STUDY <span>→</span></button>
       <div class="counters z1">
